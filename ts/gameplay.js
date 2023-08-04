@@ -1,27 +1,31 @@
 function revealCell() {
     var numCellsRevealed = 0;
     var flippedElements = [];
+    var matching = false;
     document.addEventListener("click", handleCellClick);
     if (localStorage.getItem("match") !== null) {
         restoreMatchedCells();
+        localStorage.setItem("attempt", "false");
     }
     function handleCellClick(e) {
-        localStorage.setItem("attempt", "true");
-        if (numCellsRevealed === 2) {
+        if (numCellsRevealed === 2 || matching) {
             localStorage.setItem("attempt", "false");
             return;
         }
         var target = e.target;
         if (target.className === "cell-cover") {
+            localStorage.setItem("attempt", "true");
             revealTargetCell(target);
             numCellsRevealed++;
             flippedElements.push(target.parentElement);
             if (numCellsRevealed === 2) {
+                matching = true;
                 setTimeout(function () {
                     handleMatch(flippedElements);
                     numCellsRevealed = 0;
                     flippedElements = [];
                     localStorage.setItem("attempt", "false");
+                    matching = false;
                 }, 300);
             }
         }
@@ -42,7 +46,6 @@ function revealCell() {
                 cellDiv.style.backgroundColor = "#BCCED9";
             });
         }
-        localStorage.setItem("attempt", "false");
     }
 }
 function handleMatch(flippedCells) {

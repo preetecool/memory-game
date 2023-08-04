@@ -6,33 +6,36 @@ type cell = {
 function revealCell() {
 	let numCellsRevealed: number = 0;
 	let flippedElements: HTMLElement[] = [];
+	let matching = false;
 
 	document.addEventListener("click", handleCellClick);
 
 	if (localStorage.getItem("match") !== null) {
 		restoreMatchedCells();
+		localStorage.setItem("attempt", "false");
 	}
 
 	function handleCellClick(e: Event) {
-		localStorage.setItem("attempt", "true");
-
-		if (numCellsRevealed === 2) {
+		if (numCellsRevealed === 2 || matching) {
 			localStorage.setItem("attempt", "false");
 			return;
 		}
 
 		const target = e.target as HTMLElement;
 		if (target.className === "cell-cover") {
+			localStorage.setItem("attempt", "true");
 			revealTargetCell(target);
 			numCellsRevealed++;
 			flippedElements.push(target.parentElement as HTMLElement);
 
 			if (numCellsRevealed === 2) {
+				matching = true;
 				setTimeout(() => {
 					handleMatch(flippedElements);
 					numCellsRevealed = 0;
 					flippedElements = [];
 					localStorage.setItem("attempt", "false");
+					matching = false;
 				}, 300);
 			}
 		}
@@ -54,7 +57,6 @@ function revealCell() {
 				cellDiv!.style.backgroundColor = "#BCCED9";
 			});
 		}
-		localStorage.setItem("attempt", "false");
 	}
 }
 
