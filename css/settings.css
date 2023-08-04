@@ -1,0 +1,84 @@
+.setup {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	width: 100%;
+	background-color: #152938;
+	font-weight: bold;
+	font-size: 20px;
+}
+.title_setup {
+	color: #fcfcfc;
+	font-size: 40px;
+	font-weight: bold;
+	padding-bottom: 50px;
+}
+.popup_setup {
+	width: 654px;
+}
+.game-settings {
+	max-width: 1440px;
+	min-width: 330px;
+
+	max-width: 542px;
+	background-color: #fcfcfc;
+	padding: 56px;
+	border-radius: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 33px;
+	@media screen and (min-width: 1000px) {
+		padding: 60px;
+	}
+}
+.setup-options {
+	max-width: 542px;
+
+	width: 100%;
+}
+.option-label_setup {
+	padding-bottom: 16px;
+}
+
+.option-buttons_setup {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	gap: clamp(20px, 20px, 30px);
+}
+input[type="radio"] {
+	display: none;
+}
+.radio-label {
+	padding: 10px 20px;
+	border-style: none;
+	border: 1px solid rgb(232, 231, 231);
+
+	cursor: pointer;
+	border-radius: 26px;
+	text-align: center;
+	background-color: #bcced9;
+	color: #fcfcfc;
+}
+
+input[type="radio"]:checked + .radio-label {
+	background-color: #304859;
+	color: #fcfcfc;
+}
+.radio-label:hover {
+	background-color: #6395b8;
+	color: #fcfcfc;
+}
+
+.start-game_button {
+	background-color: #fda214;
+	color: #fcfcfc;
+	width: 100%;
+	max-width: 542px;
+	border-radius: 35px;
+	border-style: none;
+	height: 70px;
+	font-weight: bold;
+	font-size: 32px;
+}

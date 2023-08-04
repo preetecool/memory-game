@@ -1,0 +1,82 @@
+.game-body {
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+.game-container {
+	width: 1100px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.header {
+	width: 100%;
+	height: 52px;
+	padding-top: 100px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.game-button_wrapper {
+	display: flex;
+	gap: 16px;
+}
+
+.game-button {
+	margin-right: 0;
+	height: 52px;
+	border-radius: 26px;
+	padding: 14px 28px;
+	border-style: none;
+}
+
+.game-board {
+	margin-top: 85px;
+	gap: 16px;
+}
+.board-sm {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+}
+.board-lg {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.cell-lg {
+	width: 118px;
+	height: 118px;
+	border-radius: 50%;
+	text-align: center;
+	line-height: 118px;
+	position: relative;
+}
+
+.cell-sm {
+	width: 82px;
+	height: 82px;
+	border-radius: 50%;
+	text-align: center;
+	line-height: 82px;
+	position: relative;
+}
+
+.cell-lg:hover,
+.cell-sm:hover {
+	cursor: pointer;
+	color: #fcfcfc;
+	background-color: #6395b8;
+}
+
+.cell-cover {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	background-color: #304859;
+	position: absolute;
+	top: 0;
+	left: 0;
+}

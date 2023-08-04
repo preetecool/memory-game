@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="./assets/favicon-32x32.png"
+		/>
+		<link
+			rel="stylesheet"
+			href="./css/main.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="./css/settings.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="./css/gameplay.css"
+		/>
+		<link
+			rel="preconnect"
+			href="https://fonts.googleapis.com"
+		/>
+		<link
+			rel="preconnect"
+			href="https://fonts.gstatic.com"
+			crossorigin
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="./ts/settings.js"></script>
+		<script src="./ts/layout.js"></script>
+		<script src="./ts/gameplay.js"></script>
+
+		<title>Memory game</title>
+	</head>
+	<body>
+		<div
+			class="setup"
+			id="setup-screen"
+		>
+			<div class="mask-overlay_setup"></div>
+			<div class="title_setup">memory</div>
+			<form
+				id="settings"
+				class="popup_setup"
+			>
+				<div class="game-settings">
+					<div class="setup-options">
+						<div class="option-label_setup">Select Card Theme</div>
+						<div
+							class="option-buttons_setup"
+							id="theme_buttons"
+						></div>
+					</div>
+
+					<div class="setup-options">
+						<div class="option-label_setup">Number of Players</div>
+						<div
+							class="option-buttons_setup"
+							id="num-players_buttons"
+						></div>
+					</div>
+
+					<div class="setup-options">
+						<div class="option-label_setup">Grid Size</div>
+						<div
+							class="option-buttons_setup"
+							id="grid-size_buttons"
+						></div>
+					</div>
+
+					<button
+						type="button"
+						class="start-game_button orange"
+						id="start-game_button"
+						onclick="handleSubmit(event);setGrid();"
+					>
+						Start Game
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<div
+			class="game-body"
+			id="game-body"
+		>
+			<div
+				class="game-container"
+				id="game-container"
+			>
+				<div class="header">
+					<div class="blue-text-lg">memory</div>
+					<div class="game-button_wrapper">
+						<button class="game-button orange white-text-med t transition">
+							Restart
+						</button>
+						<button class="game-button blue-text-med transition">
+							New Game
+						</button>
+					</div>
+				</div>
+				<div
+					class="game-board"
+					id="game-board"
+				>
+					<!-- <div class="cell light-gray-text-xlg">12</div> -->
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		document.addEventListener(
+			"DOMContentLoaded",
+			checkGameStatus(),
+			createRadioButtons("theme_buttons", 2, ["Numbers", "Icons"]),
+			createRadioButtons("num-players_buttons", 4, ["1", "2", "3", "4"]),
+			createRadioButtons("grid-size_buttons", 2, ["4x4", "6x6"])
+		);
+
+		revealCell();
+		handleMatch();
+	</script>
+</html>

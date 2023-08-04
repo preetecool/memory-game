@@ -1,0 +1,51 @@
+body,
+html {
+	margin: 0;
+	padding: 0;
+	font-family: "Atkinson Hyperlegible", sans-serif;
+}
+
+button {
+	cursor: pointer;
+}
+
+.orange {
+	background-color: #fda214;
+}
+
+.orange:hover {
+	background-color: #ffb84a;
+}
+
+.white-text-med {
+	color: #fcfcfc;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.blue-text-med {
+	color: #304859;
+	font-weight: bold;
+	font-size: 20px;
+}
+.blue-text-med:hover {
+	color: #fcfcfc;
+	background-color: #6395b8;
+}
+
+.blue-text-lg {
+	color: #304859;
+	font-weight: bold;
+	font-size: 40px;
+}
+
+.light-gray-text-xlg {
+	background-color: #bcced9;
+	color: #fcfcfc;
+	font-size: 44px;
+	font-weight: bold;
+}
+
+.transition {
+	transition: 0.4s ease;
+}
