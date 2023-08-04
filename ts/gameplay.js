@@ -14,20 +14,11 @@ function revealCell() {
                     handleMatch(flippedCells);
                     numCellsRevealed = 0;
                     flippedCells = [];
-                }, 1000); // Delay to allow player to see the cells
+                }, 200);
             }
         }
     });
 }
-// function cellMatchCheck(cells: string[]): boolean {
-// 	if (cells[0] === cells[1]) {
-// 		return true;
-// 	} else return false;
-// }
-// function isCellMatch(): boolean {
-// 	const cells = JSON.parse(localStorage.getItem("flipped")!);
-// 	return cellMatchCheck([cells]);
-// }
 function handleMatch(flippedCells) {
     var cells = flippedCells.map(function (cell) { return cell.textContent; });
     if (cells[0] === cells[1]) {
