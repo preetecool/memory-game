@@ -68,7 +68,7 @@ function setGrid(): undefined {
 	if (localStorage.getItem("cells") !== null) {
 		setGridFromStorage();
 		return;
-	} else if (localStorage.getItem("cells") === null) {
+	} else if (!localStorage.getItem("cells")) {
 		const cells = generatePairs();
 		localStorage.setItem("cells", JSON.stringify(cells));
 		for (let i = 0; i < cells.length; i++) {
