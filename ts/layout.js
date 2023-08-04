@@ -54,7 +54,8 @@ function setGridFromStorage() {
 function setGrid() {
     if (localStorage.getItem("game-status") !== "started")
         return;
-    if (localStorage.getItem("cells") !== null) {
+    if (localStorage.getItem("cells") !== null ||
+        localStorage.getItem("match") !== null) {
         setGridFromStorage();
         return;
     }

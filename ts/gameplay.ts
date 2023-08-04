@@ -3,79 +3,107 @@ type cell = {
 	textContent: number;
 	matched?: boolean;
 };
-
 function revealCell() {
 	let numCellsRevealed: number = 0;
 	let flippedElements: HTMLElement[] = [];
 
-	document.addEventListener("click", (e: Event) => {
+	document.addEventListener("click", handleCellClick);
+
+	if (localStorage.getItem("match") !== null) {
+		restoreMatchedCells();
+	}
+
+	function handleCellClick(e: Event) {
 		localStorage.setItem("attempt", "true");
-		if (numCellsRevealed === 2) return;
+
+		if (numCellsRevealed === 2) {
+			localStorage.setItem("attempt", "false");
+			return;
+		}
+
 		const target = e.target as HTMLElement;
 		if (target.className === "cell-cover") {
-			target.style.display = "none";
-			let cell = document.getElementById(target.parentElement!.id);
-			cell!.style.backgroundColor = "#fda214";
+			revealTargetCell(target);
 			numCellsRevealed++;
 			flippedElements.push(target.parentElement as HTMLElement);
 
 			if (numCellsRevealed === 2) {
 				setTimeout(() => {
 					handleMatch(flippedElements);
-
 					numCellsRevealed = 0;
 					flippedElements = [];
+					localStorage.setItem("attempt", "false");
 				}, 300);
 			}
 		}
-	});
-	if (
-		localStorage.getItem("match") !== null &&
-		localStorage.getItem("attempt") == "true"
-	) {
-		JSON.parse(localStorage.getItem("match")!).forEach((cell: cell) => {
-			let cellDiv = document.getElementById(`cell-${cell.id}`);
-			let coverDiv = cellDiv!.querySelector(".cell-cover") as HTMLElement;
-			coverDiv.style.display = "none";
-		});
+	}
+	function revealTargetCell(target: HTMLElement) {
+		target.style.display = "none";
+		let cell = document.getElementById(target.parentElement!.id);
+		cell!.style.backgroundColor = "#fda214";
+	}
+
+	function restoreMatchedCells() {
+		const matchedCells = localStorage.getItem("match");
+		if (matchedCells) {
+			const cells: cell[] = JSON.parse(matchedCells);
+			cells.forEach((cell) => {
+				let cellDiv = document.getElementById(`cell-${cell.id}`);
+				let coverDiv = cellDiv!.querySelector(".cell-cover") as HTMLElement;
+				coverDiv.style.display = "none";
+				cellDiv!.style.backgroundColor = "#BCCED9";
+			});
+		}
+		localStorage.setItem("attempt", "false");
 	}
 }
+
 function handleMatch(flippedCells: HTMLElement[]) {
-	if (!localStorage.getItem("attempt")) return;
-	// const cells = flippedCells.map((cell) => Number(cell.textContent));
-	const cells = flippedCells.map((el) => {
+	if (localStorage.getItem("attempt") === "false") return;
+
+	const cells = mapFlippedCells(flippedCells);
+	const matchingCells = cells[0].textContent === cells[1].textContent;
+
+	if (matchingCells) {
+		handleMatchingCells(flippedCells, cells);
+	} else {
+		handleNonMatchingCells(flippedCells);
+	}
+}
+
+function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
+	return flippedCells.map((el) => {
 		let cell: cell = {
 			id: Number(el.id.split("-")[1]),
 			textContent: Number(el.textContent),
 		};
 		return cell;
 	});
+}
 
-	const matchingCells = cells[0].textContent === cells[1].textContent;
-	if (matchingCells && localStorage.getItem("match") == null) {
-		for (let i = 0; i < flippedCells.length; i++) {
-			flippedCells[i].style.backgroundColor = " #6395b8";
-		}
+function handleMatchingCells(flippedCells: HTMLElement[], cells: cell[]) {
+	changeBackgroundColor(flippedCells, "#bcced9");
 
-		localStorage.removeItem("attempt");
-		localStorage.setItem("match", JSON.stringify(cells));
-	} else if (localStorage.getItem("match") !== null && matchingCells) {
-		let matchedCells: cell[] = [];
-		let previouslyMatched = localStorage.getItem("match");
-		JSON.parse(previouslyMatched!).forEach((cell: cell, index: number) =>
-			matchedCells.push(cell)
-		);
-		for (let i = 0; i < flippedCells.length; i++) {
-			flippedCells[i].style.backgroundColor = " #6395b8";
-		}
-		localStorage.setItem("match", JSON.stringify(matchedCells.concat(cells)));
-	} else {
-		localStorage.removeItem("attempt");
-		flippedCells.forEach((cell) => {
-			const cover = cell.querySelector(".cell-cover") as HTMLElement;
-			cover.style.display = "block";
-		});
+	let matchedCells: cell[] = localStorage.getItem("match")
+		? JSON.parse(localStorage.getItem("match")!)
+		: [];
+
+	localStorage.setItem("match", JSON.stringify(matchedCells.concat(cells)));
+	localStorage.removeItem("attempt");
+}
+
+function changeBackgroundColor(flippedCells: HTMLElement[], color: string) {
+	for (let i = 0; i < flippedCells.length; i++) {
+		flippedCells[i].style.backgroundColor = color;
 	}
+}
+
+function handleNonMatchingCells(flippedCells: HTMLElement[]) {
+	localStorage.removeItem("attempt");
+	flippedCells.forEach((cell) => {
+		const cover = cell.querySelector(".cell-cover") as HTMLElement;
+		cover.style.display = "block";
+	});
 }
 
 function handleReset(resetGrid: () => void) {

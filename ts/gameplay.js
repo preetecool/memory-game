@@ -1,15 +1,19 @@
 function revealCell() {
     var numCellsRevealed = 0;
     var flippedElements = [];
-    document.addEventListener("click", function (e) {
+    document.addEventListener("click", handleCellClick);
+    if (localStorage.getItem("match") !== null) {
+        restoreMatchedCells();
+    }
+    function handleCellClick(e) {
         localStorage.setItem("attempt", "true");
-        if (numCellsRevealed === 2)
+        if (numCellsRevealed === 2) {
+            localStorage.setItem("attempt", "false");
             return;
+        }
         var target = e.target;
         if (target.className === "cell-cover") {
-            target.style.display = "none";
-            var cell = document.getElementById(target.parentElement.id);
-            cell.style.backgroundColor = "#fda214";
+            revealTargetCell(target);
             numCellsRevealed++;
             flippedElements.push(target.parentElement);
             if (numCellsRevealed === 2) {
@@ -17,56 +21,70 @@ function revealCell() {
                     handleMatch(flippedElements);
                     numCellsRevealed = 0;
                     flippedElements = [];
+                    localStorage.setItem("attempt", "false");
                 }, 300);
             }
         }
-    });
-    if (localStorage.getItem("match") !== null &&
-        localStorage.getItem("attempt") == "true") {
-        JSON.parse(localStorage.getItem("match")).forEach(function (cell) {
-            var cellDiv = document.getElementById("cell-".concat(cell.id));
-            var coverDiv = cellDiv.querySelector(".cell-cover");
-            coverDiv.style.display = "none";
-        });
+    }
+    function revealTargetCell(target) {
+        target.style.display = "none";
+        var cell = document.getElementById(target.parentElement.id);
+        cell.style.backgroundColor = "#fda214";
+    }
+    function restoreMatchedCells() {
+        var matchedCells = localStorage.getItem("match");
+        if (matchedCells) {
+            var cells = JSON.parse(matchedCells);
+            cells.forEach(function (cell) {
+                var cellDiv = document.getElementById("cell-".concat(cell.id));
+                var coverDiv = cellDiv.querySelector(".cell-cover");
+                coverDiv.style.display = "none";
+                cellDiv.style.backgroundColor = "#BCCED9";
+            });
+        }
+        localStorage.setItem("attempt", "false");
     }
 }
 function handleMatch(flippedCells) {
-    if (!localStorage.getItem("attempt"))
+    if (localStorage.getItem("attempt") === "false")
         return;
-    // const cells = flippedCells.map((cell) => Number(cell.textContent));
-    var cells = flippedCells.map(function (el) {
+    var cells = mapFlippedCells(flippedCells);
+    var matchingCells = cells[0].textContent === cells[1].textContent;
+    if (matchingCells) {
+        handleMatchingCells(flippedCells, cells);
+    }
+    else {
+        handleNonMatchingCells(flippedCells);
+    }
+}
+function mapFlippedCells(flippedCells) {
+    return flippedCells.map(function (el) {
         var cell = {
             id: Number(el.id.split("-")[1]),
             textContent: Number(el.textContent),
         };
         return cell;
     });
-    var matchingCells = cells[0].textContent === cells[1].textContent;
-    if (matchingCells && localStorage.getItem("match") == null) {
-        for (var i = 0; i < flippedCells.length; i++) {
-            flippedCells[i].style.backgroundColor = " #6395b8";
-        }
-        localStorage.removeItem("attempt");
-        localStorage.setItem("match", JSON.stringify(cells));
+}
+function handleMatchingCells(flippedCells, cells) {
+    changeBackgroundColor(flippedCells, "#bcced9");
+    var matchedCells = localStorage.getItem("match")
+        ? JSON.parse(localStorage.getItem("match"))
+        : [];
+    localStorage.setItem("match", JSON.stringify(matchedCells.concat(cells)));
+    localStorage.removeItem("attempt");
+}
+function changeBackgroundColor(flippedCells, color) {
+    for (var i = 0; i < flippedCells.length; i++) {
+        flippedCells[i].style.backgroundColor = color;
     }
-    else if (localStorage.getItem("match") !== null && matchingCells) {
-        var matchedCells_1 = [];
-        var previouslyMatched = localStorage.getItem("match");
-        JSON.parse(previouslyMatched).forEach(function (cell, index) {
-            return matchedCells_1.push(cell);
-        });
-        for (var i = 0; i < flippedCells.length; i++) {
-            flippedCells[i].style.backgroundColor = " #6395b8";
-        }
-        localStorage.setItem("match", JSON.stringify(matchedCells_1.concat(cells)));
-    }
-    else {
-        localStorage.removeItem("attempt");
-        flippedCells.forEach(function (cell) {
-            var cover = cell.querySelector(".cell-cover");
-            cover.style.display = "block";
-        });
-    }
+}
+function handleNonMatchingCells(flippedCells) {
+    localStorage.removeItem("attempt");
+    flippedCells.forEach(function (cell) {
+        var cover = cell.querySelector(".cell-cover");
+        cover.style.display = "block";
+    });
 }
 function handleReset(resetGrid) {
     document.addEventListener("click", function (e) {

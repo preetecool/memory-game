@@ -64,13 +64,6 @@
 	position: relative;
 }
 
-.cell-lg:hover,
-.cell-sm:hover {
-	cursor: pointer;
-	color: #fcfcfc;
-	background-color: #6395b8;
-}
-
 .cell-cover {
 	width: 100%;
 	height: 100%;
@@ -78,5 +71,14 @@
 	background-color: #304859;
 	position: absolute;
 	top: 0;
+
 	left: 0;
+}
+
+.cell-lg:hover,
+.cell-sm:hover,
+.cell-cover:hover {
+	cursor: pointer;
+	color: #fcfcfc;
+	background-color: #6395b8;
 }
