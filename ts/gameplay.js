@@ -8,7 +8,7 @@ function revealCell() {
         localStorage.setItem("attempt", "false");
     }
     function handleCellClick(e) {
-        if (numCellsRevealed === 2 || matching) {
+        if (numCellsRevealed >= 2 || matching) {
             localStorage.setItem("attempt", "false");
             return;
         }

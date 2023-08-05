@@ -16,7 +16,7 @@ function revealCell() {
 	}
 
 	function handleCellClick(e: Event) {
-		if (numCellsRevealed === 2 || matching) {
+		if (numCellsRevealed >= 2 || matching) {
 			localStorage.setItem("attempt", "false");
 			return;
 		}
