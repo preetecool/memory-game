@@ -40,6 +40,7 @@
 .board-sm {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
+	position: relative;
 }
 .board-lg {
 	display: grid;
@@ -51,7 +52,9 @@
 	height: 118px;
 	border-radius: 50%;
 	text-align: center;
-	line-height: 118px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	position: relative;
 }
 
@@ -60,7 +63,9 @@
 	height: 82px;
 	border-radius: 50%;
 	text-align: center;
-	line-height: 82px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	position: relative;
 }
 

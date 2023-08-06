@@ -5,6 +5,7 @@ type cell = {
 };
 function revealCell() {
 	let numCellsRevealed: number = 0;
+
 	let flippedElements: HTMLElement[] = [];
 	let matching = false;
 
@@ -12,23 +13,27 @@ function revealCell() {
 
 	if (localStorage.getItem("match") !== null) {
 		restoreMatchedCells();
-		localStorage.setItem("attempt", "false");
+		localStorage.removeItem("attempt");
 	}
 
 	function handleCellClick(e: Event) {
-		if (numCellsRevealed >= 2 || matching) {
-			localStorage.setItem("attempt", "false");
+		console.log(numCellsRevealed);
+		const target = e.target as HTMLElement;
+
+		if (numCellsRevealed >= 2 && matching) {
+			numCellsRevealed = 2;
+
+			document.removeEventListener("click", handleCellClick);
 			return;
 		}
-
-		const target = e.target as HTMLElement;
 		if (target.className === "cell-cover") {
 			localStorage.setItem("attempt", "true");
 			revealTargetCell(target);
 			numCellsRevealed++;
 			flippedElements.push(target.parentElement as HTMLElement);
 
-			if (numCellsRevealed === 2) {
+			if (localStorage.getItem("attempt") === "true") {
+				if (numCellsRevealed === 2) numCellsRevealed = 2;
 				matching = true;
 				setTimeout(() => {
 					handleMatch(flippedElements);
@@ -36,7 +41,8 @@ function revealCell() {
 					flippedElements = [];
 					localStorage.setItem("attempt", "false");
 					matching = false;
-				}, 300);
+					document.addEventListener("click", handleCellClick);
+				}, 400);
 			}
 		}
 	}
@@ -47,6 +53,7 @@ function revealCell() {
 	}
 
 	function restoreMatchedCells() {
+		if (localStorage.getItem("match") === null) return;
 		const matchedCells = localStorage.getItem("match");
 		if (matchedCells) {
 			const cells: cell[] = JSON.parse(matchedCells);
@@ -108,14 +115,14 @@ function handleNonMatchingCells(flippedCells: HTMLElement[]) {
 	});
 }
 
-function handleReset(resetGrid: () => void) {
+function handleReset() {
 	document.addEventListener("click", (e: Event) => {
 		let target = e.target as HTMLElement;
 		if (target.id === "restart") {
 			localStorage.removeItem("cells");
 			localStorage.removeItem("match");
-			resetGrid();
 			location.reload();
+			// resetGrid();
 		}
 	});
 }

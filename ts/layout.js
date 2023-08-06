@@ -1,14 +1,3 @@
-function getGameBoard() {
-    fetch("html/game.html")
-        .then(function (response) { return response.text(); })
-        .then(function (content) {
-        var gameBody = document.getElementById("game-body");
-        gameBody.innerHTML = content;
-    })
-        .catch(function (error) {
-        console.error("Error loading game.html:", error);
-    });
-}
 function shuffle(array) {
     var _a;
     for (var i = array.length - 1; i > 0; i--) {
@@ -54,7 +43,7 @@ function setGridFromStorage() {
 function setGrid() {
     if (localStorage.getItem("game-status") !== "started")
         return;
-    if (localStorage.getItem("cells") !== null ||
+    else if (localStorage.getItem("cells") !== null ||
         localStorage.getItem("match") !== null) {
         setGridFromStorage();
         return;
@@ -66,4 +55,5 @@ function setGrid() {
             createElement(i, cells[i]);
         }
     }
+    return;
 }

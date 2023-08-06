@@ -5,20 +5,24 @@ function revealCell() {
     document.addEventListener("click", handleCellClick);
     if (localStorage.getItem("match") !== null) {
         restoreMatchedCells();
-        localStorage.setItem("attempt", "false");
+        localStorage.removeItem("attempt");
     }
     function handleCellClick(e) {
-        if (numCellsRevealed >= 2 || matching) {
-            localStorage.setItem("attempt", "false");
+        console.log(numCellsRevealed);
+        var target = e.target;
+        if (numCellsRevealed >= 2 && matching) {
+            numCellsRevealed = 2;
+            document.removeEventListener("click", handleCellClick);
             return;
         }
-        var target = e.target;
         if (target.className === "cell-cover") {
             localStorage.setItem("attempt", "true");
             revealTargetCell(target);
             numCellsRevealed++;
             flippedElements.push(target.parentElement);
-            if (numCellsRevealed === 2) {
+            if (localStorage.getItem("attempt") === "true") {
+                if (numCellsRevealed === 2)
+                    numCellsRevealed = 2;
                 matching = true;
                 setTimeout(function () {
                     handleMatch(flippedElements);
@@ -26,7 +30,8 @@ function revealCell() {
                     flippedElements = [];
                     localStorage.setItem("attempt", "false");
                     matching = false;
-                }, 300);
+                    document.addEventListener("click", handleCellClick);
+                }, 400);
             }
         }
     }
@@ -36,6 +41,8 @@ function revealCell() {
         cell.style.backgroundColor = "#fda214";
     }
     function restoreMatchedCells() {
+        if (localStorage.getItem("match") === null)
+            return;
         var matchedCells = localStorage.getItem("match");
         if (matchedCells) {
             var cells = JSON.parse(matchedCells);
@@ -89,14 +96,14 @@ function handleNonMatchingCells(flippedCells) {
         cover.style.display = "block";
     });
 }
-function handleReset(resetGrid) {
+function handleReset() {
     document.addEventListener("click", function (e) {
         var target = e.target;
         if (target.id === "restart") {
             localStorage.removeItem("cells");
             localStorage.removeItem("match");
-            resetGrid();
             location.reload();
+            // resetGrid();
         }
     });
 }
