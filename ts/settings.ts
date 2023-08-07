@@ -61,6 +61,7 @@ function getFormElements(): FormElements | undefined {
 }
 
 function handleSubmit(event: Event) {
+	localStorage.clear();
 	const { theme, numPlayers, grid } = getFormElements();
 
 	if (!theme || !numPlayers || !grid) {
@@ -93,6 +94,7 @@ function handleSubmit(event: Event) {
 	localStorage.setItem("game-status", "started");
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
 	localStorage.setItem("player-turn", "1");
+	// localStorage.setItem("timer", "[0,0]");
 
 	const setupScreen = document.getElementById("setup-screen");
 	if (!setupScreen) {

@@ -54,6 +54,7 @@ function setGrid(): undefined {
 	if (localStorage.getItem("game-status") !== "started") return;
 	else if (localStorage.getItem("cells") || localStorage.getItem("match")) {
 		setGridFromStorage();
+		setPlayerStats;
 		return;
 	} else if (!localStorage.getItem("cells")) {
 		const cells = generatePairs();
@@ -72,7 +73,7 @@ function createDivWithClass(className: string, textContent?: string) {
 	return div;
 }
 
-function setPlayerStats(setTimer?: () => void) {
+function setPlayerStats() {
 	const statsDiv = document.getElementById("stats")!;
 
 	if (localStorage.getItem("num-player") === "1") {
@@ -101,6 +102,5 @@ function setPlayerStats(setTimer?: () => void) {
 
 		statsDiv.appendChild(timerDiv);
 		statsDiv.appendChild(movesDiv);
-		setTimer;
 	}
 }

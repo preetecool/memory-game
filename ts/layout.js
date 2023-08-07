@@ -45,6 +45,7 @@ function setGrid() {
         return;
     else if (localStorage.getItem("cells") || localStorage.getItem("match")) {
         setGridFromStorage();
+        setPlayerStats;
         return;
     }
     else if (!localStorage.getItem("cells")) {
@@ -53,9 +54,6 @@ function setGrid() {
         for (var i = 0; i < cells.length; i++) {
             createElement(i, cells[i]);
         }
-    }
-    if (localStorage.getItem("timer") !== null) {
-        localStorage.removeItem("timer");
     }
     return;
 }
@@ -66,7 +64,7 @@ function createDivWithClass(className, textContent) {
         div.textContent = textContent;
     return div;
 }
-function setPlayerStats(setTimer) {
+function setPlayerStats() {
     var statsDiv = document.getElementById("stats");
     if (localStorage.getItem("num-player") === "1") {
         statsDiv.style.maxWidth = "532px";
@@ -90,6 +88,5 @@ function setPlayerStats(setTimer) {
         movesDiv.appendChild(movesCount);
         statsDiv.appendChild(timerDiv);
         statsDiv.appendChild(movesDiv);
-        setTimer;
     }
 }

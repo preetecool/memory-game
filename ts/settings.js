@@ -45,6 +45,7 @@ function getFormElements() {
     return { theme: theme, numPlayers: numPlayers, grid: grid };
 }
 function handleSubmit(event) {
+    localStorage.clear();
     var _a = getFormElements(), theme = _a.theme, numPlayers = _a.numPlayers, grid = _a.grid;
     if (!theme || !numPlayers || !grid) {
         alert("Please select all settings before starting the game.");
@@ -75,6 +76,7 @@ function handleSubmit(event) {
     localStorage.setItem("game-status", "started");
     localStorage.setItem("player-stats", JSON.stringify(playerStats));
     localStorage.setItem("player-turn", "1");
+    // localStorage.setItem("timer", "[0,0]");
     var setupScreen = document.getElementById("setup-screen");
     if (!setupScreen) {
         throw new Error("Setup Screen not found.");

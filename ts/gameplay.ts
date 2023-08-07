@@ -180,6 +180,7 @@ function handleTimer(): number {
 	};
 
 	timerInterval = setInterval(() => {
+		if (localStorage.getItem("game-status") !== "started") return;
 		seconds++;
 		if (seconds === 60) {
 			minutes++;
@@ -216,6 +217,5 @@ function handleReset() {
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
 	clearInterval(timerInterval);
 	handleTimer();
-	location.reload();
 }
 timerInterval = handleTimer();
