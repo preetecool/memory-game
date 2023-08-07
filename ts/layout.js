@@ -18,8 +18,7 @@ function generatePairs() {
 function createElement(index, cell) {
     var gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
     var gameBoard = document.getElementById("game-board");
-    gameBoard.className =
-        gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
+    gameBoard.className = gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
     var div = document.createElement("div");
     gameBoard.appendChild(div);
     div.className =
@@ -43,8 +42,7 @@ function setGridFromStorage() {
 function setGrid() {
     if (localStorage.getItem("game-status") !== "started")
         return;
-    else if (localStorage.getItem("cells") !== null ||
-        localStorage.getItem("match") !== null) {
+    else if (localStorage.getItem("cells") !== null || localStorage.getItem("match") !== null) {
         setGridFromStorage();
         return;
     }
@@ -68,8 +66,12 @@ function setPlayerStats() {
         timerLabel.textContent = "Time";
         timer.appendChild(timerLabel);
         var stopwatch = timer.cloneNode();
+        stopwatch.className = "stat-item time";
         stopwatch.id = "stopwatch";
-        stopwatch.textContent = JSON.parse(localStorage.getItem("timer"));
+        if (localStorage.getItem("timer") !== null) {
+            stopwatch.textContent = localStorage.getItem("timer");
+            timer.appendChild(stopwatch);
+        }
         var moves = timer.cloneNode();
         moves.className = "stat-item moves";
         var movesLabel = timer.cloneNode();

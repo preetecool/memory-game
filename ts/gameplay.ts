@@ -10,6 +10,9 @@ type player = {
 };
 
 function revealCell() {
+    if (localStorage.getItem("timer") === null) {
+        handleTimer();
+    }
     let numCellsRevealed: number = 0;
 
     let flippedElements: HTMLElement[] = [];
@@ -162,17 +165,15 @@ function handleTimer() {
 
     let seconds = 0;
     let minutes = 0;
-    let timer = `${minutes}:${seconds}`;
     let timerInterval = setInterval(() => {
         seconds++;
         if (seconds === 60) {
             minutes++;
             seconds = 0;
         }
-        localStorage.setItem("timer", JSON.stringify(timer));
+        localStorage.setItem("timer", JSON.stringify(`${minutes}:${seconds}`));
     }, 1000);
-
-    return timer;
+    return timerInterval;
 }
 
 function handleReset() {

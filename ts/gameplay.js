@@ -1,4 +1,7 @@
 function revealCell() {
+    if (localStorage.getItem("timer") === null) {
+        handleTimer();
+    }
     var numCellsRevealed = 0;
     var flippedElements = [];
     var matching = false;
@@ -86,7 +89,6 @@ function handleMatchingCells(flippedCells, cells) {
         ? JSON.parse(localStorage.getItem("match"))
         : [];
     localStorage.setItem("match", JSON.stringify(matchedCells.concat(cells)));
-    localStorage.removeItem("attempt");
 }
 function changeBackgroundColor(flippedCells, color) {
     for (var i = 0; i < flippedCells.length; i++) {
@@ -94,7 +96,6 @@ function changeBackgroundColor(flippedCells, color) {
     }
 }
 function handleNonMatchingCells(flippedCells) {
-    localStorage.setItem("attempt", "false");
     flippedCells.forEach(function (cell) {
         var cover = cell.querySelector(".cell-cover");
         cover.style.display = "block";
@@ -139,16 +140,15 @@ function handleTimer() {
         return;
     var seconds = 0;
     var minutes = 0;
-    var timer = "".concat(minutes, ":").concat(seconds);
     var timerInterval = setInterval(function () {
         seconds++;
         if (seconds === 60) {
             minutes++;
             seconds = 0;
         }
-        localStorage.setItem("timer", JSON.stringify(timer));
+        localStorage.setItem("timer", JSON.stringify("".concat(minutes, ":").concat(seconds)));
     }, 1000);
-    return timer;
+    return timerInterval;
 }
 function handleReset() {
     document.addEventListener("click", function (e) {
