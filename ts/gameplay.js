@@ -19,8 +19,7 @@ function revealCell() {
             revealTargetCell(target);
             numCellsRevealed++;
             flippedElements.push(target.parentElement);
-            if (numCellsRevealed === 2 &&
-                localStorage.getItem("attempt") === "true") {
+            if (numCellsRevealed === 2 && localStorage.getItem("attempt") === "true") {
                 if (numCellsRevealed === 2)
                     numCellsRevealed = 2;
                 matching = true;
@@ -70,7 +69,7 @@ function handleMatch(flippedCells) {
         handleAttemptCount();
         handlePlayerTurn((playerTurn += 1));
     }
-    localStorage.setItem("attempt", "false");
+    localStorage.removeItem("attempt");
 }
 function mapFlippedCells(flippedCells) {
     return flippedCells.map(function (el) {
@@ -125,7 +124,7 @@ function handleAttemptCount() {
 function handlePlayerTurn(playerTurn) {
     var numPlayers = localStorage.getItem("num-player");
     if (numPlayers === "1") {
-        localStorage.setItem("player-turn", "player_1");
+        localStorage.setItem("player-turn", "1");
         return;
     }
     else {
