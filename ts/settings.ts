@@ -3,6 +3,7 @@ type FormElements = {
 	numPlayers: string;
 	grid: string;
 };
+
 function checkGameStatus() {
 	const gameStatus = localStorage.getItem("game-status");
 	if (gameStatus === "started") {
@@ -67,11 +68,31 @@ function handleSubmit(event: Event) {
 		event.preventDefault();
 		return;
 	}
+	const playerStats = {
+		player_1: {
+			score: 0,
+			attempts: 0,
+		},
+		player_2: {
+			score: 0,
+			attempts: 0,
+		},
+		player_3: {
+			score: 0,
+			attempts: 0,
+		},
+		player_4: {
+			score: 0,
+			attempts: 0,
+		},
+	};
 
-	localStorage.setItem("theme-value", theme);
-	localStorage.setItem("num-player-value", numPlayers);
-	localStorage.setItem("grid-size-value", grid);
+	localStorage.setItem("theme", theme);
+	localStorage.setItem("num-player", numPlayers);
+	localStorage.setItem("grid-size", grid);
 	localStorage.setItem("game-status", "started");
+	localStorage.setItem("player-stats", JSON.stringify(playerStats));
+	localStorage.setItem("player-turn", "1");
 
 	const setupScreen = document.getElementById("setup-screen");
 	if (!setupScreen) {

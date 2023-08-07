@@ -7,7 +7,7 @@ function shuffle(array) {
     return array;
 }
 function generatePairs() {
-    var gridSize = localStorage.getItem("grid-size-value");
+    var gridSize = localStorage.getItem("grid-size");
     var numCells = gridSize === "4x4" ? 16 : 36;
     var numsArray = [];
     for (var i = 1; i <= numCells; i++) {
@@ -16,7 +16,7 @@ function generatePairs() {
     return shuffle(numsArray);
 }
 function createElement(index, cell) {
-    var gridVal = localStorage.getItem("grid-size-value") === "4x4" ? "sm" : "lg";
+    var gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
     var gameBoard = document.getElementById("game-board");
     gameBoard.className =
         gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
@@ -55,5 +55,27 @@ function setGrid() {
             createElement(i, cells[i]);
         }
     }
+    setPlayerStats();
     return;
+}
+function setPlayerStats() {
+    console.log("stats function");
+    var statsDiv = document.getElementById("stats");
+    if (localStorage.getItem("num-player") == "1") {
+        var timer = document.createElement("div");
+        timer.className = "stat-item timer";
+        var timerLabel = timer.cloneNode();
+        timerLabel.textContent = "Time";
+        timer.appendChild(timerLabel);
+        var stopwatch = timer.cloneNode();
+        stopwatch.id = "stopwatch";
+        stopwatch.textContent = JSON.parse(localStorage.getItem("timer"));
+        var moves = timer.cloneNode();
+        moves.className = "stat-item moves";
+        var movesLabel = timer.cloneNode();
+        movesLabel.textContent = "Moves";
+        moves.appendChild(movesLabel);
+        statsDiv.appendChild(timer);
+        statsDiv.appendChild(moves);
+    }
 }

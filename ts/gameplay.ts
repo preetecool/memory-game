@@ -3,6 +3,12 @@ type cell = {
 	textContent: number;
 	matched?: boolean;
 };
+
+type player = {
+	score: number;
+	attempts: number;
+};
+
 function revealCell() {
 	let numCellsRevealed: number = 0;
 
@@ -17,12 +23,10 @@ function revealCell() {
 	}
 
 	function handleCellClick(e: Event) {
-		console.log(numCellsRevealed);
 		const target = e.target as HTMLElement;
 
 		if (numCellsRevealed >= 2 && matching) {
 			numCellsRevealed = 2;
-
 			document.removeEventListener("click", handleCellClick);
 			return;
 		}
@@ -32,7 +36,10 @@ function revealCell() {
 			numCellsRevealed++;
 			flippedElements.push(target.parentElement as HTMLElement);
 
-			if (localStorage.getItem("attempt") === "true") {
+			if (
+				numCellsRevealed === 2 &&
+				localStorage.getItem("attempt") === "true"
+			) {
 				if (numCellsRevealed === 2) numCellsRevealed = 2;
 				matching = true;
 				setTimeout(() => {
@@ -68,16 +75,21 @@ function revealCell() {
 }
 
 function handleMatch(flippedCells: HTMLElement[]) {
-	if (localStorage.getItem("attempt") === "false") return;
-
 	const cells = mapFlippedCells(flippedCells);
-	const matchingCells = cells[0].textContent === cells[1].textContent;
+	const matchingCells: boolean = cells[0].textContent === cells[1].textContent;
+	let playerTurn = Number(localStorage.getItem("player-turn"));
 
 	if (matchingCells) {
 		handleMatchingCells(flippedCells, cells);
+		handleScore();
+		handleAttemptCount();
 	} else {
+		console.log(playerTurn);
 		handleNonMatchingCells(flippedCells);
+		handleAttemptCount();
+		handlePlayerTurn((playerTurn += 1));
 	}
+	localStorage.setItem("attempt", "false");
 }
 
 function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
@@ -108,11 +120,64 @@ function changeBackgroundColor(flippedCells: HTMLElement[], color: string) {
 }
 
 function handleNonMatchingCells(flippedCells: HTMLElement[]) {
-	localStorage.removeItem("attempt");
+	localStorage.setItem("attempt", "false");
 	flippedCells.forEach((cell) => {
 		const cover = cell.querySelector(".cell-cover") as HTMLElement;
 		cover.style.display = "block";
 	});
+}
+
+function handleScore(): undefined {
+	let playerTurn = localStorage.getItem("player-turn");
+	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
+	console.log(playerStats);
+	playerStats["player_" + playerTurn].score++;
+	localStorage.setItem("player-stats", JSON.stringify(playerStats));
+	// return score
+}
+
+function handleAttemptCount() {
+	const playerStats = JSON.parse(localStorage.getItem("player-stats")!);
+	if (localStorage.getItem("num-player") === "1") {
+		playerStats.player_1.attempts++;
+		localStorage.setItem("player-stats", JSON.stringify(playerStats));
+		return;
+	} else {
+		const playerTurn = JSON.parse(localStorage.getItem("player-turn")!);
+		playerStats[`player_${playerTurn}`].attempts++;
+		localStorage.setItem("player-stats", JSON.stringify(playerStats));
+	}
+}
+
+function handlePlayerTurn(playerTurn: number) {
+	let numPlayers = localStorage.getItem("num-player");
+
+	if (numPlayers === "1") {
+		localStorage.setItem("player-turn", "player_1");
+		return;
+	} else {
+		if (playerTurn > Number(numPlayers)) {
+			playerTurn = 1;
+		}
+		localStorage.setItem("player-turn", playerTurn.toString());
+	}
+}
+function handleTimer() {
+	if (localStorage.getItem("timer") !== null) return;
+
+	let seconds = 0;
+	let minutes = 0;
+	let timer = `${minutes}:${seconds}`;
+	let timerInterval = setInterval(() => {
+		seconds++;
+		if (seconds === 60) {
+			minutes++;
+			seconds = 0;
+		}
+		localStorage.setItem("timer", JSON.stringify(timer));
+	}, 1000);
+
+	return timer;
 }
 
 function handleReset() {
@@ -121,8 +186,14 @@ function handleReset() {
 		if (target.id === "restart") {
 			localStorage.removeItem("cells");
 			localStorage.removeItem("match");
+			let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
+
+			for (let player in playerStats) {
+				playerStats[player].score = 0;
+				playerStats[player].attempts = 0;
+			}
+			localStorage.setItem("player-stats", JSON.stringify(playerStats));
 			location.reload();
-			// resetGrid();
 		}
 	});
 }

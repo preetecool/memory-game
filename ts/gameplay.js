@@ -8,7 +8,6 @@ function revealCell() {
         localStorage.removeItem("attempt");
     }
     function handleCellClick(e) {
-        console.log(numCellsRevealed);
         var target = e.target;
         if (numCellsRevealed >= 2 && matching) {
             numCellsRevealed = 2;
@@ -20,7 +19,8 @@ function revealCell() {
             revealTargetCell(target);
             numCellsRevealed++;
             flippedElements.push(target.parentElement);
-            if (localStorage.getItem("attempt") === "true") {
+            if (numCellsRevealed === 2 &&
+                localStorage.getItem("attempt") === "true") {
                 if (numCellsRevealed === 2)
                     numCellsRevealed = 2;
                 matching = true;
@@ -56,16 +56,21 @@ function revealCell() {
     }
 }
 function handleMatch(flippedCells) {
-    if (localStorage.getItem("attempt") === "false")
-        return;
     var cells = mapFlippedCells(flippedCells);
     var matchingCells = cells[0].textContent === cells[1].textContent;
+    var playerTurn = Number(localStorage.getItem("player-turn"));
     if (matchingCells) {
         handleMatchingCells(flippedCells, cells);
+        handleScore();
+        handleAttemptCount();
     }
     else {
+        console.log(playerTurn);
         handleNonMatchingCells(flippedCells);
+        handleAttemptCount();
+        handlePlayerTurn((playerTurn += 1));
     }
+    localStorage.setItem("attempt", "false");
 }
 function mapFlippedCells(flippedCells) {
     return flippedCells.map(function (el) {
@@ -90,11 +95,61 @@ function changeBackgroundColor(flippedCells, color) {
     }
 }
 function handleNonMatchingCells(flippedCells) {
-    localStorage.removeItem("attempt");
+    localStorage.setItem("attempt", "false");
     flippedCells.forEach(function (cell) {
         var cover = cell.querySelector(".cell-cover");
         cover.style.display = "block";
     });
+}
+function handleScore() {
+    var playerTurn = localStorage.getItem("player-turn");
+    var playerStats = JSON.parse(localStorage.getItem("player-stats"));
+    console.log(playerStats);
+    playerStats["player_" + playerTurn].score++;
+    localStorage.setItem("player-stats", JSON.stringify(playerStats));
+    // return score
+}
+function handleAttemptCount() {
+    var playerStats = JSON.parse(localStorage.getItem("player-stats"));
+    if (localStorage.getItem("num-player") === "1") {
+        playerStats.player_1.attempts++;
+        localStorage.setItem("player-stats", JSON.stringify(playerStats));
+        return;
+    }
+    else {
+        var playerTurn = JSON.parse(localStorage.getItem("player-turn"));
+        playerStats["player_".concat(playerTurn)].attempts++;
+        localStorage.setItem("player-stats", JSON.stringify(playerStats));
+    }
+}
+function handlePlayerTurn(playerTurn) {
+    var numPlayers = localStorage.getItem("num-player");
+    if (numPlayers === "1") {
+        localStorage.setItem("player-turn", "player_1");
+        return;
+    }
+    else {
+        if (playerTurn > Number(numPlayers)) {
+            playerTurn = 1;
+        }
+        localStorage.setItem("player-turn", playerTurn.toString());
+    }
+}
+function handleTimer() {
+    if (localStorage.getItem("timer") !== null)
+        return;
+    var seconds = 0;
+    var minutes = 0;
+    var timer = "".concat(minutes, ":").concat(seconds);
+    var timerInterval = setInterval(function () {
+        seconds++;
+        if (seconds === 60) {
+            minutes++;
+            seconds = 0;
+        }
+        localStorage.setItem("timer", JSON.stringify(timer));
+    }, 1000);
+    return timer;
 }
 function handleReset() {
     document.addEventListener("click", function (e) {
@@ -102,8 +157,13 @@ function handleReset() {
         if (target.id === "restart") {
             localStorage.removeItem("cells");
             localStorage.removeItem("match");
+            var playerStats = JSON.parse(localStorage.getItem("player-stats"));
+            for (var player in playerStats) {
+                playerStats[player].score = 0;
+                playerStats[player].attempts = 0;
+            }
+            localStorage.setItem("player-stats", JSON.stringify(playerStats));
             location.reload();
-            // resetGrid();
         }
     });
 }

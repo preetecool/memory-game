@@ -6,7 +6,7 @@ function shuffle(array: number[]): number[] {
 	return array;
 }
 function generatePairs(): number[] {
-	const gridSize = localStorage.getItem("grid-size-value");
+	const gridSize = localStorage.getItem("grid-size");
 	let numCells: number = gridSize === "4x4" ? 16 : 36;
 	const numsArray: number[] = [];
 
@@ -18,7 +18,7 @@ function generatePairs(): number[] {
 }
 
 function createElement(index: number, cell: number) {
-	let gridVal = localStorage.getItem("grid-size-value") === "4x4" ? "sm" : "lg";
+	let gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
 	let gameBoard: HTMLElement = document.getElementById("game-board")!;
 	gameBoard.className =
 		gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
@@ -65,5 +65,30 @@ function setGrid(): undefined {
 			createElement(i, cells[i]);
 		}
 	}
+	setPlayerStats();
 	return;
+}
+
+function setPlayerStats() {
+	console.log("stats function");
+	const statsDiv = document.getElementById("stats")!;
+
+	if (localStorage.getItem("num-player") == "1") {
+		let timer = document.createElement("div");
+		timer.className = "stat-item timer";
+		let timerLabel = timer.cloneNode() as HTMLElement;
+		timerLabel.textContent = "Time";
+		timer.appendChild(timerLabel);
+		let stopwatch = timer.cloneNode() as HTMLElement;
+		stopwatch.id = "stopwatch";
+		stopwatch.textContent = localStorage.getItem("timer")!;
+
+		let moves = timer.cloneNode() as HTMLElement;
+		moves.className = "stat-item moves";
+		let movesLabel = timer.cloneNode() as HTMLElement;
+		movesLabel.textContent = "Moves";
+		moves.appendChild(movesLabel);
+		statsDiv.appendChild(timer);
+		statsDiv.appendChild(moves);
+	}
 }
