@@ -48,12 +48,14 @@ function setGrid() {
         return;
     }
     else if (!localStorage.getItem("cells")) {
-        setPlayerStats();
         var cells = generatePairs();
         localStorage.setItem("cells", JSON.stringify(cells));
         for (var i = 0; i < cells.length; i++) {
             createElement(i, cells[i]);
         }
+    }
+    if (localStorage.getItem("timer") !== null) {
+        localStorage.removeItem("timer");
     }
     return;
 }
@@ -64,29 +66,30 @@ function createDivWithClass(className, textContent) {
         div.textContent = textContent;
     return div;
 }
-function setPlayerStats() {
-    console.log("stats function");
+function setPlayerStats(setTimer) {
     var statsDiv = document.getElementById("stats");
     if (localStorage.getItem("num-player") === "1") {
         statsDiv.style.maxWidth = "532px";
         var timerDiv = createDivWithClass("stat-item");
         timerDiv.appendChild(createDivWithClass("stat-label", "Time"));
-        var stopwatch_1 = createDivWithClass("time blue-text-32");
-        stopwatch_1.id = "stopwatch";
-        timerDiv.appendChild(stopwatch_1);
-        stopwatch_1.textContent = "00:00";
-        if (localStorage.getItem("timer") !== null) {
-            setInterval(function () {
-                stopwatch_1.textContent = JSON.parse(localStorage.getItem("timer"));
-            }, 1000);
-        }
+        var stopwatch = createDivWithClass("time blue-text-32");
+        stopwatch.id = "stopwatch";
+        timerDiv.appendChild(stopwatch);
+        // if (localStorage.getItem("timer")) {
+        // 	stopwatch.textContent = JSON.parse(localStorage.getItem("timer")!);
+        // } else stopwatch.textContent = "00:00";
         var movesDiv = createDivWithClass("stat-item");
         movesDiv.appendChild(createDivWithClass("", "Moves"));
         var movesCount = createDivWithClass("moves blue-text-32");
         movesCount.id = "moves";
-        movesCount.textContent = "0";
+        if (JSON.parse(localStorage.getItem("player-stats"))) {
+            movesCount.textContent = JSON.parse(localStorage.getItem("player-stats")).player_1.attempts.toString();
+        }
+        else
+            movesCount.textContent = "0";
         movesDiv.appendChild(movesCount);
         statsDiv.appendChild(timerDiv);
         statsDiv.appendChild(movesDiv);
+        setTimer;
     }
 }

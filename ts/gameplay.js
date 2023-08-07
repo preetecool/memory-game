@@ -135,34 +135,50 @@ function handlePlayerTurn(playerTurn) {
         localStorage.setItem("player-turn", playerTurn.toString());
     }
 }
+var timerInterval;
 function handleTimer() {
-    if (localStorage.getItem("timer") !== null)
-        return;
-    var seconds = 0;
-    var minutes = 0;
-    var timerInterval = setInterval(function () {
+    var timerValue = localStorage.getItem("timer");
+    var _a = timerValue ? JSON.parse(timerValue) : [0, 0], minutes = _a[0], seconds = _a[1];
+    // Function to update the display
+    var updateDisplay = function () {
+        var timerElement = document.getElementById("stopwatch");
+        if (timerElement) {
+            timerElement.textContent = "".concat(minutes, ":").concat(seconds);
+        }
+    };
+    timerInterval = setInterval(function () {
         seconds++;
         if (seconds === 60) {
             minutes++;
             seconds = 0;
         }
-        localStorage.setItem("timer", JSON.stringify("".concat(minutes, ":").concat(seconds)));
+        localStorage.setItem("timer", JSON.stringify([minutes, seconds]));
+        updateDisplay();
     }, 1000);
+    updateDisplay();
     return timerInterval;
 }
 function handleReset() {
     document.addEventListener("click", function (e) {
         var target = e.target;
         if (target.id === "restart") {
-            localStorage.removeItem("cells");
-            localStorage.removeItem("match");
-            var playerStats = JSON.parse(localStorage.getItem("player-stats"));
-            for (var player in playerStats) {
-                playerStats[player].score = 0;
-                playerStats[player].attempts = 0;
-            }
-            localStorage.setItem("player-stats", JSON.stringify(playerStats));
-            location.reload();
         }
     });
+    localStorage.removeItem("timer");
+    localStorage.removeItem("cells");
+    localStorage.removeItem("match");
+    var timerElement = document.getElementById("stopwatch");
+    var playerStats = JSON.parse(localStorage.getItem("player-stats"));
+    if (timerElement) {
+        timerElement.textContent = "0:0";
+    }
+    for (var player in playerStats) {
+        playerStats[player].score = 0;
+        playerStats[player].attempts = 0;
+    }
+    localStorage.setItem("player-stats", JSON.stringify(playerStats));
+    clearInterval(timerInterval);
+    handleTimer();
+    location.reload();
 }
+timerInterval = handleTimer();

@@ -164,19 +164,34 @@ function handlePlayerTurn(playerTurn: number) {
 		localStorage.setItem("player-turn", playerTurn.toString());
 	}
 }
-function handleTimer() {
-	if (localStorage.getItem("timer") !== null) return;
 
-	let seconds = 0;
-	let minutes = 0;
-	let timerInterval = setInterval(() => {
+let timerInterval: number;
+
+function handleTimer(): number {
+	let timerValue = localStorage.getItem("timer");
+	let [minutes, seconds] = timerValue ? JSON.parse(timerValue) : [0, 0];
+
+	// Function to update the display
+	const updateDisplay = () => {
+		const timerElement = document.getElementById("stopwatch");
+		if (timerElement) {
+			timerElement.textContent = `${minutes}:${seconds}`;
+		}
+	};
+
+	timerInterval = setInterval(() => {
 		seconds++;
 		if (seconds === 60) {
 			minutes++;
 			seconds = 0;
 		}
-		localStorage.setItem("timer", JSON.stringify(`${minutes}:${seconds}`));
+
+		localStorage.setItem("timer", JSON.stringify([minutes, seconds]));
+		updateDisplay();
 	}, 1000);
+
+	updateDisplay();
+
 	return timerInterval;
 }
 
@@ -184,16 +199,23 @@ function handleReset() {
 	document.addEventListener("click", (e: Event) => {
 		let target = e.target as HTMLElement;
 		if (target.id === "restart") {
-			localStorage.removeItem("cells");
-			localStorage.removeItem("match");
-			let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
-
-			for (let player in playerStats) {
-				playerStats[player].score = 0;
-				playerStats[player].attempts = 0;
-			}
-			localStorage.setItem("player-stats", JSON.stringify(playerStats));
-			location.reload();
 		}
 	});
+	localStorage.removeItem("timer");
+	localStorage.removeItem("cells");
+	localStorage.removeItem("match");
+	const timerElement = document.getElementById("stopwatch");
+	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
+	if (timerElement) {
+		timerElement.textContent = "0:0";
+	}
+	for (let player in playerStats) {
+		playerStats[player].score = 0;
+		playerStats[player].attempts = 0;
+	}
+	localStorage.setItem("player-stats", JSON.stringify(playerStats));
+	clearInterval(timerInterval);
+	handleTimer();
+	location.reload();
 }
+timerInterval = handleTimer();

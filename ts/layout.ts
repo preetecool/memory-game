@@ -56,7 +56,6 @@ function setGrid(): undefined {
 		setGridFromStorage();
 		return;
 	} else if (!localStorage.getItem("cells")) {
-		setPlayerStats();
 		const cells = generatePairs();
 		localStorage.setItem("cells", JSON.stringify(cells));
 		for (let i = 0; i < cells.length; i++) {
@@ -73,8 +72,7 @@ function createDivWithClass(className: string, textContent?: string) {
 	return div;
 }
 
-function setPlayerStats() {
-	console.log("stats function");
+function setPlayerStats(setTimer?: () => void) {
 	const statsDiv = document.getElementById("stats")!;
 
 	if (localStorage.getItem("num-player") === "1") {
@@ -86,21 +84,23 @@ function setPlayerStats() {
 		stopwatch.id = "stopwatch";
 
 		timerDiv.appendChild(stopwatch);
-		stopwatch.textContent = "00:00";
-		if (localStorage.getItem("timer") !== null) {
-			setInterval(() => {
-				stopwatch.textContent = JSON.parse(localStorage.getItem("timer")!);
-			}, 1000);
-		}
+		// if (localStorage.getItem("timer")) {
+		// 	stopwatch.textContent = JSON.parse(localStorage.getItem("timer")!);
+		// } else stopwatch.textContent = "00:00";
 
 		const movesDiv = createDivWithClass("stat-item");
 		movesDiv.appendChild(createDivWithClass("", "Moves"));
 		const movesCount = createDivWithClass("moves blue-text-32");
 		movesCount.id = "moves";
-		movesCount.textContent = "0";
+		if (JSON.parse(localStorage.getItem("player-stats")!)) {
+			movesCount.textContent = JSON.parse(
+				localStorage.getItem("player-stats")!
+			).player_1.attempts.toString();
+		} else movesCount.textContent = "0";
 		movesDiv.appendChild(movesCount);
 
 		statsDiv.appendChild(timerDiv);
 		statsDiv.appendChild(movesDiv);
+		setTimer;
 	}
 }
