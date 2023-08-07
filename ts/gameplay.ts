@@ -177,7 +177,7 @@ function handleTimer() {
 			minutes++;
 			seconds = 0;
 		}
-		localStorage.setItem("timer", JSON.stringify(minutes + seconds));
+		localStorage.setItem("timer", JSON.stringify(`${minutes}:${seconds}`));
 	}, 1000);
 	return timerInterval;
 }

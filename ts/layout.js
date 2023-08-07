@@ -74,6 +74,7 @@ function setPlayerStats() {
         timerDiv.appendChild(createDivWithClass("stat-label", "Time"));
         var stopwatch_1 = createDivWithClass("time blue-text-32");
         timerDiv.appendChild(stopwatch_1);
+        stopwatch_1.textContent = "00:00";
         if (localStorage.getItem("timer") !== null) {
             setInterval(function () {
                 stopwatch_1.textContent = JSON.parse(localStorage.getItem("timer"));
