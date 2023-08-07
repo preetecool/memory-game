@@ -28,6 +28,13 @@ button {
 	font-weight: bold;
 	font-size: 20px;
 }
+
+.blue-text-32 {
+	color: #304859;
+	font-weight: bold;
+	font-size: 32px;
+}
+
 .blue-text-med:hover {
 	color: #fcfcfc;
 	background-color: #6395b8;

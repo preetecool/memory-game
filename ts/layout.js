@@ -18,7 +18,8 @@ function generatePairs() {
 function createElement(index, cell) {
     var gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
     var gameBoard = document.getElementById("game-board");
-    gameBoard.className = gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
+    gameBoard.className =
+        gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
     var div = document.createElement("div");
     gameBoard.appendChild(div);
     div.className =
@@ -42,7 +43,8 @@ function setGridFromStorage() {
 function setGrid() {
     if (localStorage.getItem("game-status") !== "started")
         return;
-    else if (localStorage.getItem("cells") !== null || localStorage.getItem("match") !== null) {
+    else if (localStorage.getItem("cells") !== null ||
+        localStorage.getItem("match") !== null) {
         setGridFromStorage();
         return;
     }
@@ -56,28 +58,34 @@ function setGrid() {
     setPlayerStats();
     return;
 }
+function createDivWithClass(className, textContent) {
+    var div = document.createElement("div");
+    div.className = className;
+    if (textContent)
+        div.textContent = textContent;
+    return div;
+}
 function setPlayerStats() {
     console.log("stats function");
     var statsDiv = document.getElementById("stats");
-    if (localStorage.getItem("num-player") == "1") {
-        var timer = document.createElement("div");
-        timer.className = "stat-item timer";
-        var timerLabel = timer.cloneNode();
-        timerLabel.textContent = "Time";
-        timer.appendChild(timerLabel);
-        var stopwatch = timer.cloneNode();
-        stopwatch.className = "stat-item time";
-        stopwatch.id = "stopwatch";
+    if (localStorage.getItem("num-player") === "1") {
+        statsDiv.style.maxWidth = "532px";
+        var timerDiv = createDivWithClass("stat-item");
+        timerDiv.appendChild(createDivWithClass("stat-label", "Time"));
+        var stopwatch_1 = createDivWithClass("time blue-text-32");
+        timerDiv.appendChild(stopwatch_1);
         if (localStorage.getItem("timer") !== null) {
-            stopwatch.textContent = localStorage.getItem("timer");
-            timer.appendChild(stopwatch);
+            setInterval(function () {
+                stopwatch_1.textContent = JSON.parse(localStorage.getItem("timer"));
+            }, 1000);
         }
-        var moves = timer.cloneNode();
-        moves.className = "stat-item moves";
-        var movesLabel = timer.cloneNode();
-        movesLabel.textContent = "Moves";
-        moves.appendChild(movesLabel);
-        statsDiv.appendChild(timer);
-        statsDiv.appendChild(moves);
+        var movesDiv = createDivWithClass("stat-item");
+        movesDiv.appendChild(createDivWithClass("", "Moves"));
+        var movesCount = createDivWithClass("moves blue-text-32");
+        movesCount.id = "moves";
+        movesCount.textContent = "0";
+        movesDiv.appendChild(movesCount);
+        statsDiv.appendChild(timerDiv);
+        statsDiv.appendChild(movesDiv);
     }
 }

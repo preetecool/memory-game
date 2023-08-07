@@ -22,7 +22,8 @@ function revealCell() {
             revealTargetCell(target);
             numCellsRevealed++;
             flippedElements.push(target.parentElement);
-            if (numCellsRevealed === 2 && localStorage.getItem("attempt") === "true") {
+            if (numCellsRevealed === 2 &&
+                localStorage.getItem("attempt") === "true") {
                 if (numCellsRevealed === 2)
                     numCellsRevealed = 2;
                 matching = true;
@@ -114,6 +115,8 @@ function handleAttemptCount() {
     if (localStorage.getItem("num-player") === "1") {
         playerStats.player_1.attempts++;
         localStorage.setItem("player-stats", JSON.stringify(playerStats));
+        var moves = document.getElementById("moves");
+        moves.textContent = playerStats.player_1.attempts.toString();
         return;
     }
     else {
@@ -146,7 +149,7 @@ function handleTimer() {
             minutes++;
             seconds = 0;
         }
-        localStorage.setItem("timer", JSON.stringify("".concat(minutes, ":").concat(seconds)));
+        localStorage.setItem("timer", JSON.stringify(minutes + seconds));
     }, 1000);
     return timerInterval;
 }

@@ -95,4 +95,21 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	gap: 30px;
+}
+
+.stat-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	/* max-width: 250px; */
+	width: 250px;
+
+	max-height: 72px;
+	font-weight: bold;
+	font-size: 18px;
+	color: #304859;
+	padding: 1em;
+	background-color: #dfe7ec;
+	border-radius: 10px;
 }
