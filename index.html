@@ -142,11 +142,13 @@
 			createRadioButtons("num-players_buttons", 4, ["1", "2", "3", "4"]),
 			createRadioButtons("grid-size_buttons", 2, ["4x4", "6x6"]),
 			setGrid(),
+		
 	
 		);
-		revealCell();
+	
 		window.onload = function() {
-  		setPlayerStats();
+			revealCell();
+			handleTimer();
 		};
 		
 		// handleTimer();

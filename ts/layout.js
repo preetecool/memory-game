@@ -43,19 +43,18 @@ function setGridFromStorage() {
 function setGrid() {
     if (localStorage.getItem("game-status") !== "started")
         return;
-    else if (localStorage.getItem("cells") !== null ||
-        localStorage.getItem("match") !== null) {
+    else if (localStorage.getItem("cells") || localStorage.getItem("match")) {
         setGridFromStorage();
         return;
     }
     else if (!localStorage.getItem("cells")) {
+        setPlayerStats();
         var cells = generatePairs();
         localStorage.setItem("cells", JSON.stringify(cells));
         for (var i = 0; i < cells.length; i++) {
             createElement(i, cells[i]);
         }
     }
-    setPlayerStats();
     return;
 }
 function createDivWithClass(className, textContent) {

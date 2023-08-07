@@ -10,9 +10,6 @@ type player = {
 };
 
 function revealCell() {
-	if (localStorage.getItem("timer") === null) {
-		handleTimer();
-	}
 	let numCellsRevealed: number = 0;
 
 	let flippedElements: HTMLElement[] = [];

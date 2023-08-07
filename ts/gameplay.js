@@ -1,7 +1,4 @@
 function revealCell() {
-    if (localStorage.getItem("timer") === null) {
-        handleTimer();
-    }
     var numCellsRevealed = 0;
     var flippedElements = [];
     var matching = false;

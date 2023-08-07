@@ -52,20 +52,18 @@ function setGridFromStorage() {
 
 function setGrid(): undefined {
 	if (localStorage.getItem("game-status") !== "started") return;
-	else if (
-		localStorage.getItem("cells") !== null ||
-		localStorage.getItem("match") !== null
-	) {
+	else if (localStorage.getItem("cells") || localStorage.getItem("match")) {
 		setGridFromStorage();
 		return;
 	} else if (!localStorage.getItem("cells")) {
+		setPlayerStats();
 		const cells = generatePairs();
 		localStorage.setItem("cells", JSON.stringify(cells));
 		for (let i = 0; i < cells.length; i++) {
 			createElement(i, cells[i]);
 		}
 	}
-	setPlayerStats();
+
 	return;
 }
 function createDivWithClass(className: string, textContent?: string) {
