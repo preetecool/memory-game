@@ -83,6 +83,8 @@ function setPlayerStats() {
 		const timerDiv = createDivWithClass("stat-item");
 		timerDiv.appendChild(createDivWithClass("stat-label", "Time"));
 		const stopwatch = createDivWithClass("time blue-text-32");
+		stopwatch.id = "stopwatch";
+
 		timerDiv.appendChild(stopwatch);
 		stopwatch.textContent = "00:00";
 		if (localStorage.getItem("timer") !== null) {

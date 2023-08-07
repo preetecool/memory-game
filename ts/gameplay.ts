@@ -9,68 +9,63 @@ type player = {
 	attempts: number;
 };
 
+let numCellsRevealed: number = 0;
+let flippedElements: HTMLElement[] = [];
+let matching = false;
+
 function revealCell() {
-	let numCellsRevealed: number = 0;
-
-	let flippedElements: HTMLElement[] = [];
-	let matching = false;
-
 	document.addEventListener("click", handleCellClick);
 
 	if (localStorage.getItem("match") !== null) {
 		restoreMatchedCells();
 		localStorage.removeItem("attempt");
 	}
+}
 
-	function handleCellClick(e: Event) {
-		const target = e.target as HTMLElement;
+function handleCellClick(e: Event) {
+	const target = e.target as HTMLElement;
+	if (target.className !== "cell-cover" || (numCellsRevealed >= 2 && matching))
+		return;
 
-		if (numCellsRevealed >= 2 && matching) {
-			numCellsRevealed = 2;
-			document.removeEventListener("click", handleCellClick);
-			return;
-		}
-		if (target.className === "cell-cover") {
-			localStorage.setItem("attempt", "true");
-			revealTargetCell(target);
-			numCellsRevealed++;
-			flippedElements.push(target.parentElement as HTMLElement);
+	localStorage.setItem("attempt", "true");
+	revealTargetCell(target);
+	numCellsRevealed++;
+	flippedElements.push(target.parentElement as HTMLElement);
 
-			if (
-				numCellsRevealed === 2 &&
-				localStorage.getItem("attempt") === "true"
-			) {
-				if (numCellsRevealed === 2) numCellsRevealed = 2;
-				matching = true;
-				setTimeout(() => {
-					handleMatch(flippedElements);
-					numCellsRevealed = 0;
-					flippedElements = [];
-					localStorage.setItem("attempt", "false");
-					matching = false;
-					document.addEventListener("click", handleCellClick);
-				}, 400);
-			}
-		}
+	if (numCellsRevealed === 2) {
+		matching = true;
+		setTimeout(() => {
+			handleMatch(flippedElements);
+			resetMatchingState();
+		}, 400);
 	}
-	function revealTargetCell(target: HTMLElement) {
-		target.style.display = "none";
-		let cell = document.getElementById(target.parentElement!.id);
-		cell!.style.backgroundColor = "#fda214";
-	}
+}
 
-	function restoreMatchedCells() {
-		if (localStorage.getItem("match") === null) return;
-		const matchedCells = localStorage.getItem("match");
-		if (matchedCells) {
-			const cells: cell[] = JSON.parse(matchedCells);
-			cells.forEach((cell) => {
-				let cellDiv = document.getElementById(`cell-${cell.id}`);
-				let coverDiv = cellDiv!.querySelector(".cell-cover") as HTMLElement;
-				coverDiv.style.display = "none";
-				cellDiv!.style.backgroundColor = "#BCCED9";
-			});
-		}
+function resetMatchingState() {
+	numCellsRevealed = 0;
+	flippedElements = [];
+	localStorage.setItem("attempt", "false");
+	matching = false;
+	document.addEventListener("click", handleCellClick);
+}
+
+function revealTargetCell(target: HTMLElement) {
+	target.style.display = "none";
+	let cell = document.getElementById(target.parentElement!.id);
+	cell!.style.backgroundColor = "#fda214";
+}
+
+function restoreMatchedCells() {
+	if (localStorage.getItem("match") === null) return;
+	const matchedCells = localStorage.getItem("match");
+	if (matchedCells) {
+		const cells: cell[] = JSON.parse(matchedCells);
+		cells.forEach((cell) => {
+			let cellDiv = document.getElementById(`cell-${cell.id}`);
+			let coverDiv = cellDiv!.querySelector(".cell-cover") as HTMLElement;
+			coverDiv.style.display = "none";
+			cellDiv!.style.backgroundColor = "#BCCED9";
+		});
 	}
 }
 
@@ -100,6 +95,12 @@ function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
 		};
 		return cell;
 	});
+}
+
+function updatePlayerStat(player: string, field: keyof player, value: number) {
+	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
+	playerStats[player][field] += value;
+	localStorage.setItem("player-stats", JSON.stringify(playerStats));
 }
 
 function handleMatchingCells(flippedCells: HTMLElement[], cells: cell[]) {
