@@ -25,7 +25,7 @@ function createElement(index, cell) {
     div.className =
         gridVal == "sm"
             ? "cell-lg light-gray-text-xlg transition"
-            : "cell-sm light-gray-text-lg transition";
+            : "cell-sm light-gray-text-xlg transition";
     div.id = "cell-".concat(index + 1);
     div.textContent = cell.toString();
     var cellDiv = document.getElementById("cell-".concat(index + 1));
