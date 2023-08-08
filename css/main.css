@@ -52,10 +52,17 @@ button {
 	font-size: 40px;
 }
 
-.light-gray-text-xlg {
+.light-gray-text-lg {
 	background-color: #bcced9;
 	color: #fcfcfc;
 	font-size: 44px;
+	font-weight: bold;
+}
+
+.light-gray-text-xlg {
+	background-color: #bcced9;
+	color: #fcfcfc;
+	font-size: 56px;
 	font-weight: bold;
 }
 
