@@ -23,6 +23,12 @@ button {
 	font-size: 20px;
 }
 
+.white-text-32 {
+	color: #fcfcfc;
+	font-weight: bold;
+	font-size: 32px;
+}
+
 .blue-text-med {
 	color: #304859;
 	font-weight: bold;

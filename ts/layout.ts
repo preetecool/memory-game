@@ -75,24 +75,52 @@ function createDivWithClass(className: string, textContent?: string) {
 
 function setPlayerStats() {
 	const statsDiv = document.getElementById("stats");
+	let numPlayers: string = localStorage.getItem("num-player")!;
+	if (!statsDiv) return;
 
-	if (!statsDiv || localStorage.getItem("num-player") !== "1") return;
+	if (numPlayers === "1") {
+		statsDiv.style.maxWidth = "532px";
 
-	statsDiv.style.maxWidth = "532px";
+		const timerDiv = createStatItem(
+			"Time",
+			"stopwatch",
+			formatTime(localStorage.getItem("timer") || "0:00")
+		);
+		const movesDiv = createStatItem("Moves", "moves", getPlayerAttempts());
 
-	const timerDiv = createStatItem(
-		"Time",
-		"stopwatch",
-		formatTime(localStorage.getItem("timer") || "0:00")
-	);
-	const movesDiv = createStatItem("Moves", "moves", getPlayerAttempts());
+		statsDiv.appendChild(timerDiv);
+		statsDiv.appendChild(movesDiv);
+	}
+	if (numPlayers !== "1") {
+		let stats = JSON.parse(localStorage.getItem("player-stats") || "{}");
 
-	statsDiv.appendChild(timerDiv);
-	statsDiv.appendChild(movesDiv);
+		for (let i = 1; i <= Number(numPlayers); i++) {
+			statsDiv.appendChild(
+				createStatItem(
+					`Player ${i}`,
+					`player-${i}`,
+					stats[`player_${i}`].score || "0"
+				)
+			);
+		}
+
+		if (localStorage.getItem("player-turn")) {
+			let playerTurn = Number(localStorage.getItem("player-turn"));
+			let turnIndicator = document.createElement("div");
+
+			let childElement = statsDiv.querySelector(`#player-${playerTurn}-card`);
+			childElement?.classList.add("stat-active");
+			turnIndicator.className = "turn-indicator";
+			if (childElement) {
+				childElement.appendChild(turnIndicator);
+			}
+		}
+	}
 }
 
 function createStatItem(label: string, id: string, content: string) {
 	const statItemDiv = createDivWithClass("stat-item");
+	statItemDiv.id = id + "-card";
 	statItemDiv.appendChild(createDivWithClass("stat-label", label));
 
 	const contentDiv = createDivWithClass("blue-text-32", content);
@@ -103,11 +131,13 @@ function createStatItem(label: string, id: string, content: string) {
 }
 
 function formatTime(time: string) {
-	if (time.indexOf(",") !== -1)
-		// return time.replace(",", ":").replace("[", "").replace("]", "");
-		return time.replace(/,|\[|\]/g, (match) => (match === "," ? ":" : ""));
-	const parsedTime = JSON.parse(time);
-	return parsedTime;
+	try {
+		let [mins, decaseconds, seconds] = JSON.parse(time);
+		return `${mins}:${decaseconds}${seconds}`;
+	} catch (error) {
+		console.error("Error parsing time:", error);
+		return "0:00";
+	}
 }
 
 function getPlayerAttempts() {

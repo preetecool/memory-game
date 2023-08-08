@@ -8,7 +8,7 @@ type player = {
 	score: number;
 	attempts: number;
 };
-let timerInterval: number;
+let timerInterval: number | undefined;
 
 let numCellsRevealed: number = 0;
 let flippedElements: HTMLElement[] = [];
@@ -80,7 +80,6 @@ function handleMatch(flippedCells: HTMLElement[]) {
 		handleScore();
 		handleAttemptCount();
 	} else {
-		console.log(playerTurn);
 		handleNonMatchingCells(flippedCells);
 		handleAttemptCount();
 		handlePlayerTurn((playerTurn += 1));
@@ -130,9 +129,11 @@ function handleNonMatchingCells(flippedCells: HTMLElement[]) {
 function handleScore() {
 	let playerTurn = localStorage.getItem("player-turn");
 	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
-	console.log(playerStats);
 	playerStats["player_" + playerTurn].score++;
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
+	let score = document.getElementById(`player-${playerTurn}`)!;
+	score.innerHTML = playerStats["player_" + playerTurn].score.toString();
+
 	// return score
 }
 
@@ -154,7 +155,6 @@ function handleAttemptCount() {
 
 function handlePlayerTurn(playerTurn: number) {
 	let numPlayers = localStorage.getItem("num-player");
-
 	if (numPlayers === "1") {
 		localStorage.setItem("player-turn", "1");
 		return;
@@ -163,30 +163,61 @@ function handlePlayerTurn(playerTurn: number) {
 			playerTurn = 1;
 		}
 		localStorage.setItem("player-turn", playerTurn.toString());
+		for (let i = 1; i <= Number(numPlayers); i++) {
+			let cardId = `player-${i}-card`; // Use 'i' instead of 'playerTurn'
+			let playerScoreCard = document.getElementById(cardId);
+			let turnIndicator = document.createElement("div");
+			turnIndicator.className = "turn-indicator";
+
+			if (playerScoreCard) {
+				if (i === playerTurn) {
+					playerScoreCard.classList.add("stat-active");
+					playerScoreCard.appendChild(turnIndicator);
+				} else {
+					playerScoreCard.classList.remove("stat-active");
+					// playerScoreCard.style.backgroundColor = "#DFE7EC";
+					// playerScoreCard.style.removeProperty("color");
+					const indicator = playerScoreCard.querySelector(".turn-indicator");
+					if (indicator) {
+						playerScoreCard.removeChild(indicator);
+					}
+				}
+			}
+		}
 	}
 }
 
-function handleTimer(): number {
+function handleTimer(): number | undefined {
+	if (localStorage.getItem("num-player") !== "1") return;
 	let timerValue = localStorage.getItem("timer");
-	let [minutes, seconds] = timerValue ? JSON.parse(timerValue) : [0, 0];
+	let [minutes, decaseconds, seconds] = timerValue
+		? JSON.parse(timerValue)
+		: [0, 0, 0];
 
 	// Function to update the display
 	const updateDisplay = () => {
 		const timerElement = document.getElementById("stopwatch");
 		if (timerElement) {
-			timerElement.textContent = `${minutes}:${seconds}`;
+			timerElement.textContent = `${minutes}:${decaseconds}${seconds}`;
 		}
 	};
 
 	timerInterval = setInterval(() => {
 		if (localStorage.getItem("game-status") !== "started") return;
 		seconds++;
-		if (seconds === 60) {
-			minutes++;
+		if (seconds === 10) {
+			decaseconds++;
 			seconds = 0;
 		}
+		if (decaseconds === 6) {
+			minutes++;
+			decaseconds = 0;
+		}
 
-		localStorage.setItem("timer", JSON.stringify([minutes, seconds]));
+		localStorage.setItem(
+			"timer",
+			JSON.stringify([minutes, decaseconds, seconds])
+		);
 		updateDisplay();
 	}, 1000);
 
@@ -196,25 +227,17 @@ function handleTimer(): number {
 }
 
 function handleReset() {
-	document.addEventListener("click", (e: Event) => {
-		let target = e.target as HTMLElement;
-		if (target.id === "restart") {
-		}
-	});
+	clearInterval(timerInterval);
 	localStorage.removeItem("timer");
 	localStorage.removeItem("cells");
 	localStorage.removeItem("match");
-	const timerElement = document.getElementById("stopwatch");
-	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
-	if (timerElement) {
-		timerElement.textContent = "0:0";
-	}
+
+	let playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
 	for (let player in playerStats) {
 		playerStats[player].score = 0;
 		playerStats[player].attempts = 0;
 	}
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
-	clearInterval(timerInterval);
-	handleTimer();
+	location.reload();
 }
 timerInterval = handleTimer();

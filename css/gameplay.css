@@ -104,7 +104,7 @@
 	align-items: center;
 	/* max-width: 250px; */
 	width: 250px;
-
+	position: relative;
 	max-height: 72px;
 	font-weight: bold;
 	font-size: 18px;
@@ -112,4 +112,25 @@
 	padding: 1em;
 	background-color: #dfe7ec;
 	border-radius: 10px;
+	box-sizing: border-box;
+	z-index: 1;
+}
+.stat-active {
+	background-color: #fda214;
+	color: #fcfcfc;
+}
+.stat-active > .blue-text-32 {
+	color: #fcfcfc;
+}
+
+.turn-indicator {
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	transform: rotate(45deg) transLateX(-50%);
+	background-color: #fda214;
+	/* margin: -30px auto 0 auto; */
+	z-index: -1;
+	left: 50%;
+	top: -4px;
 }

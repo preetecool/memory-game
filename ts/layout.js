@@ -66,16 +66,36 @@ function createDivWithClass(className, textContent) {
 }
 function setPlayerStats() {
     var statsDiv = document.getElementById("stats");
-    if (!statsDiv || localStorage.getItem("num-player") !== "1")
+    var numPlayers = localStorage.getItem("num-player");
+    if (!statsDiv)
         return;
-    statsDiv.style.maxWidth = "532px";
-    var timerDiv = createStatItem("Time", "stopwatch", formatTime(localStorage.getItem("timer") || "0:00"));
-    var movesDiv = createStatItem("Moves", "moves", getPlayerAttempts());
-    statsDiv.appendChild(timerDiv);
-    statsDiv.appendChild(movesDiv);
+    if (numPlayers === "1") {
+        statsDiv.style.maxWidth = "532px";
+        var timerDiv = createStatItem("Time", "stopwatch", formatTime(localStorage.getItem("timer") || "0:00"));
+        var movesDiv = createStatItem("Moves", "moves", getPlayerAttempts());
+        statsDiv.appendChild(timerDiv);
+        statsDiv.appendChild(movesDiv);
+    }
+    if (numPlayers !== "1") {
+        var stats = JSON.parse(localStorage.getItem("player-stats") || "{}");
+        for (var i = 1; i <= Number(numPlayers); i++) {
+            statsDiv.appendChild(createStatItem("Player ".concat(i), "player-".concat(i), stats["player_".concat(i)].score || "0"));
+        }
+        if (localStorage.getItem("player-turn")) {
+            var playerTurn = Number(localStorage.getItem("player-turn"));
+            var turnIndicator = document.createElement("div");
+            var childElement = statsDiv.querySelector("#player-".concat(playerTurn, "-card"));
+            childElement === null || childElement === void 0 ? void 0 : childElement.classList.add("stat-active");
+            turnIndicator.className = "turn-indicator";
+            if (childElement) {
+                childElement.appendChild(turnIndicator);
+            }
+        }
+    }
 }
 function createStatItem(label, id, content) {
     var statItemDiv = createDivWithClass("stat-item");
+    statItemDiv.id = id + "-card";
     statItemDiv.appendChild(createDivWithClass("stat-label", label));
     var contentDiv = createDivWithClass("blue-text-32", content);
     contentDiv.id = id;
@@ -83,11 +103,14 @@ function createStatItem(label, id, content) {
     return statItemDiv;
 }
 function formatTime(time) {
-    if (time.indexOf(",") !== -1)
-        // return time.replace(",", ":").replace("[", "").replace("]", "");
-        return time.replace(/,|\[|\]/g, function (match) { return (match === "," ? ":" : ""); });
-    var parsedTime = JSON.parse(time);
-    return parsedTime;
+    try {
+        var _a = JSON.parse(time), mins = _a[0], decaseconds = _a[1], seconds = _a[2];
+        return "".concat(mins, ":").concat(decaseconds).concat(seconds);
+    }
+    catch (error) {
+        console.error("Error parsing time:", error);
+        return "0:00";
+    }
 }
 function getPlayerAttempts() {
     var _a;
