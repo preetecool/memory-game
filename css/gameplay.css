@@ -45,6 +45,7 @@
 .board-lg {
 	display: grid;
 	grid-template-columns: repeat(6, 1fr);
+	position: relative;
 }
 
 .cell-lg {
