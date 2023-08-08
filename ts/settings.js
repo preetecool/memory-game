@@ -29,8 +29,7 @@ function createRadioButtons(id, numButtons, labels) {
     }
 }
 function getFormElements() {
-    if (localStorage.getItem("game-status") === "started")
-        return;
+    // if (localStorage.getItem("game-status") === "started") return;
     var form = document.getElementById("settings");
     if (!form) {
         throw new Error("Form not found.");
@@ -76,7 +75,6 @@ function handleSubmit(event) {
     localStorage.setItem("game-status", "started");
     localStorage.setItem("player-stats", JSON.stringify(playerStats));
     localStorage.setItem("player-turn", "1");
-    // localStorage.setItem("timer", "[0,0]");
     var setupScreen = document.getElementById("setup-screen");
     if (!setupScreen) {
         throw new Error("Setup Screen not found.");

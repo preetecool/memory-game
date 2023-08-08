@@ -39,8 +39,8 @@ function createRadioButtons(id: string, numButtons: number, labels: string[]) {
 	}
 }
 
-function getFormElements(): FormElements | undefined {
-	if (localStorage.getItem("game-status") === "started") return;
+function getFormElements(): FormElements {
+	// if (localStorage.getItem("game-status") === "started") return;
 	const form = document.getElementById("settings");
 	if (!form) {
 		throw new Error(`Form not found.`);
@@ -87,14 +87,12 @@ function handleSubmit(event: Event) {
 			attempts: 0,
 		},
 	};
-
 	localStorage.setItem("theme", theme);
 	localStorage.setItem("num-player", numPlayers);
 	localStorage.setItem("grid-size", grid);
 	localStorage.setItem("game-status", "started");
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
 	localStorage.setItem("player-turn", "1");
-	// localStorage.setItem("timer", "[0,0]");
 
 	const setupScreen = document.getElementById("setup-screen");
 	if (!setupScreen) {

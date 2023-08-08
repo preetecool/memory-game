@@ -1,3 +1,4 @@
+var timerInterval;
 var numCellsRevealed = 0;
 var flippedElements = [];
 var matching = false;
@@ -135,7 +136,6 @@ function handlePlayerTurn(playerTurn) {
         localStorage.setItem("player-turn", playerTurn.toString());
     }
 }
-var timerInterval;
 function handleTimer() {
     var timerValue = localStorage.getItem("timer");
     var _a = timerValue ? JSON.parse(timerValue) : [0, 0], minutes = _a[0], seconds = _a[1];

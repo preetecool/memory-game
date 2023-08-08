@@ -8,6 +8,7 @@ type player = {
 	score: number;
 	attempts: number;
 };
+let timerInterval: number;
 
 let numCellsRevealed: number = 0;
 let flippedElements: HTMLElement[] = [];
@@ -164,8 +165,6 @@ function handlePlayerTurn(playerTurn: number) {
 		localStorage.setItem("player-turn", playerTurn.toString());
 	}
 }
-
-let timerInterval: number;
 
 function handleTimer(): number {
 	let timerValue = localStorage.getItem("timer");

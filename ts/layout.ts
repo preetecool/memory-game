@@ -74,33 +74,43 @@ function createDivWithClass(className: string, textContent?: string) {
 }
 
 function setPlayerStats() {
-	const statsDiv = document.getElementById("stats")!;
+	const statsDiv = document.getElementById("stats");
 
-	if (localStorage.getItem("num-player") === "1") {
-		statsDiv.style.maxWidth = "532px";
+	if (!statsDiv || localStorage.getItem("num-player") !== "1") return;
 
-		const timerDiv = createDivWithClass("stat-item");
-		timerDiv.appendChild(createDivWithClass("stat-label", "Time"));
-		const stopwatch = createDivWithClass("time blue-text-32");
-		stopwatch.id = "stopwatch";
+	statsDiv.style.maxWidth = "532px";
 
-		timerDiv.appendChild(stopwatch);
-		// if (localStorage.getItem("timer")) {
-		// 	stopwatch.textContent = JSON.parse(localStorage.getItem("timer")!);
-		// } else stopwatch.textContent = "00:00";
+	const timerDiv = createStatItem(
+		"Time",
+		"stopwatch",
+		formatTime(localStorage.getItem("timer") || "0:00")
+	);
+	const movesDiv = createStatItem("Moves", "moves", getPlayerAttempts());
 
-		const movesDiv = createDivWithClass("stat-item");
-		movesDiv.appendChild(createDivWithClass("", "Moves"));
-		const movesCount = createDivWithClass("moves blue-text-32");
-		movesCount.id = "moves";
-		if (JSON.parse(localStorage.getItem("player-stats")!)) {
-			movesCount.textContent = JSON.parse(
-				localStorage.getItem("player-stats")!
-			).player_1.attempts.toString();
-		} else movesCount.textContent = "0";
-		movesDiv.appendChild(movesCount);
+	statsDiv.appendChild(timerDiv);
+	statsDiv.appendChild(movesDiv);
+}
 
-		statsDiv.appendChild(timerDiv);
-		statsDiv.appendChild(movesDiv);
-	}
+function createStatItem(label: string, id: string, content: string) {
+	const statItemDiv = createDivWithClass("stat-item");
+	statItemDiv.appendChild(createDivWithClass("stat-label", label));
+
+	const contentDiv = createDivWithClass("blue-text-32", content);
+	contentDiv.id = id;
+
+	statItemDiv.appendChild(contentDiv);
+	return statItemDiv;
+}
+
+function formatTime(time: string) {
+	if (time.indexOf(",") !== -1)
+		// return time.replace(",", ":").replace("[", "").replace("]", "");
+		return time.replace(/,|\[|\]/g, (match) => (match === "," ? ":" : ""));
+	const parsedTime = JSON.parse(time);
+	return parsedTime;
+}
+
+function getPlayerAttempts() {
+	const playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
+	return (playerStats.player_1?.attempts || 0).toString();
 }

@@ -66,27 +66,31 @@ function createDivWithClass(className, textContent) {
 }
 function setPlayerStats() {
     var statsDiv = document.getElementById("stats");
-    if (localStorage.getItem("num-player") === "1") {
-        statsDiv.style.maxWidth = "532px";
-        var timerDiv = createDivWithClass("stat-item");
-        timerDiv.appendChild(createDivWithClass("stat-label", "Time"));
-        var stopwatch = createDivWithClass("time blue-text-32");
-        stopwatch.id = "stopwatch";
-        timerDiv.appendChild(stopwatch);
-        // if (localStorage.getItem("timer")) {
-        // 	stopwatch.textContent = JSON.parse(localStorage.getItem("timer")!);
-        // } else stopwatch.textContent = "00:00";
-        var movesDiv = createDivWithClass("stat-item");
-        movesDiv.appendChild(createDivWithClass("", "Moves"));
-        var movesCount = createDivWithClass("moves blue-text-32");
-        movesCount.id = "moves";
-        if (JSON.parse(localStorage.getItem("player-stats"))) {
-            movesCount.textContent = JSON.parse(localStorage.getItem("player-stats")).player_1.attempts.toString();
-        }
-        else
-            movesCount.textContent = "0";
-        movesDiv.appendChild(movesCount);
-        statsDiv.appendChild(timerDiv);
-        statsDiv.appendChild(movesDiv);
-    }
+    if (!statsDiv || localStorage.getItem("num-player") !== "1")
+        return;
+    statsDiv.style.maxWidth = "532px";
+    var timerDiv = createStatItem("Time", "stopwatch", formatTime(localStorage.getItem("timer") || "0:00"));
+    var movesDiv = createStatItem("Moves", "moves", getPlayerAttempts());
+    statsDiv.appendChild(timerDiv);
+    statsDiv.appendChild(movesDiv);
+}
+function createStatItem(label, id, content) {
+    var statItemDiv = createDivWithClass("stat-item");
+    statItemDiv.appendChild(createDivWithClass("stat-label", label));
+    var contentDiv = createDivWithClass("blue-text-32", content);
+    contentDiv.id = id;
+    statItemDiv.appendChild(contentDiv);
+    return statItemDiv;
+}
+function formatTime(time) {
+    if (time.indexOf(",") !== -1)
+        // return time.replace(",", ":").replace("[", "").replace("]", "");
+        return time.replace(/,|\[|\]/g, function (match) { return (match === "," ? ":" : ""); });
+    var parsedTime = JSON.parse(time);
+    return parsedTime;
+}
+function getPlayerAttempts() {
+    var _a;
+    var playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
+    return (((_a = playerStats.player_1) === null || _a === void 0 ? void 0 : _a.attempts) || 0).toString();
 }
