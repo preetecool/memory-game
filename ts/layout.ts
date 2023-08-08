@@ -29,7 +29,7 @@ function createElement(index: number, cell: number) {
 	div.className =
 		gridVal == "sm"
 			? "cell-lg light-gray-text-xlg transition"
-			: "cell-sm light-gray-text-xlg transition";
+			: "cell-sm light-gray-text-lg transition";
 	div.id = `cell-${index + 1}`;
 
 	div.textContent = cell.toString();
