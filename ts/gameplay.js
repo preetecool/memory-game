@@ -104,8 +104,10 @@ function handleScore() {
     var playerStats = JSON.parse(localStorage.getItem("player-stats"));
     playerStats["player_" + playerTurn].score++;
     localStorage.setItem("player-stats", JSON.stringify(playerStats));
-    var score = document.getElementById("player-".concat(playerTurn));
-    score.innerHTML = playerStats["player_" + playerTurn].score.toString();
+    if (localStorage.getItem("num-player") !== "1") {
+        var score = document.getElementById("player-".concat(playerTurn));
+        score.innerHTML = playerStats["player_" + playerTurn].score.toString();
+    }
     // return score
 }
 function handleAttemptCount() {

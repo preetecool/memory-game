@@ -131,8 +131,10 @@ function handleScore() {
 	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
 	playerStats["player_" + playerTurn].score++;
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
-	let score = document.getElementById(`player-${playerTurn}`)!;
-	score.innerHTML = playerStats["player_" + playerTurn].score.toString();
+	if (localStorage.getItem("num-player") !== "1") {
+		let score = document.getElementById(`player-${playerTurn}`)!;
+		score.innerHTML = playerStats["player_" + playerTurn].score.toString();
+	}
 
 	// return score
 }
