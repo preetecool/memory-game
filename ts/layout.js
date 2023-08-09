@@ -57,6 +57,7 @@ function setGridFromStorage() {
             createElement(i, cells[i]);
         }
     }
+    // localStorage.setItem("cells", JSON.stringify(cells));
 }
 function setGrid() {
     if (localStorage.getItem("game-status") !== "started")
@@ -74,11 +75,12 @@ function setGrid() {
             }
             localStorage.setItem("cells", JSON.stringify(shuffle()));
         }
-        if (localStorage.getItem("theme") === "Numbers") {
+        else if (localStorage.getItem("theme") === "Numbers") {
             var cells = generatePairs();
             for (var i = 0; i < cells.length; i++) {
                 createElement(i, cells[i]);
             }
+            localStorage.setItem("cells", JSON.stringify(cells));
         }
     }
     return;

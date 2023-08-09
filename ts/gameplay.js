@@ -52,16 +52,6 @@ function restoreMatchedCells() {
     }
 }
 function handleMatch(flippedCells) {
-    // const cells = mapFlippedCells(flippedCells);
-    // console.log(flippedCells);
-    // let matchingCells: boolean = false;
-    // if (localStorage.getItem("theme") === "Icons") {
-    // 	let img_1 = cells[0].querySelector!("img") as HTMLImageElement;
-    // 	let img_2 = cells[1].querySelector!("img") as HTMLImageElement;
-    // 	console.log(img_1);
-    // 	matchingCells = cells[0].img!.src === cells[1].img!.src;
-    // } else matchingCells = cells[0].textContent === cells[1].textContent;
-    // console.log(matchingCells);
     var playerTurn = Number(localStorage.getItem("player-turn"));
     var cells = mapFlippedCells(flippedCells);
     var matchingCells = false;
@@ -224,3 +214,7 @@ function handleReset() {
     location.reload();
 }
 timerInterval = handleTimer();
+function newGame() {
+    localStorage.clear();
+    location.reload();
+}

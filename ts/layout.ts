@@ -55,6 +55,7 @@ function createElement(index: number, cell?: number, url?: string) {
 
 function setGridFromStorage() {
 	let icons = localStorage.getItem("theme") === "Icons";
+
 	let cells = JSON.parse(localStorage.getItem("cells")!);
 	for (let i = 0; i < cells.length; i++) {
 		if (icons) {
@@ -63,6 +64,7 @@ function setGridFromStorage() {
 			createElement(i, cells[i]);
 		}
 	}
+	// localStorage.setItem("cells", JSON.stringify(cells));
 }
 
 function setGrid(): undefined {
@@ -78,12 +80,12 @@ function setGrid(): undefined {
 				createElement(i, undefined, cells[i].url);
 			}
 			localStorage.setItem("cells", JSON.stringify(shuffle()));
-		}
-		if (localStorage.getItem("theme") === "Numbers") {
+		} else if (localStorage.getItem("theme") === "Numbers") {
 			const cells = generatePairs();
 			for (let i = 0; i < cells.length; i++) {
 				createElement(i, cells[i]);
 			}
+			localStorage.setItem("cells", JSON.stringify(cells));
 		}
 	}
 
