@@ -18,8 +18,7 @@ function generatePairs() {
 function createElement(index, cell) {
     var gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
     var gameBoard = document.getElementById("game-board");
-    gameBoard.className =
-        gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
+    gameBoard.className = gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
     var div = document.createElement("div");
     gameBoard.appendChild(div);
     div.className =
@@ -117,3 +116,33 @@ function getPlayerAttempts() {
     var playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
     return (((_a = playerStats.player_1) === null || _a === void 0 ? void 0 : _a.attempts) || 0).toString();
 }
+function mapIcons() {
+    var iconName = [
+        "bell",
+        "circle",
+        "font-awesome",
+        "futbol",
+        "gem",
+        "hand-spock",
+        "heart",
+        "hourglass",
+        "lemon",
+        "lightbulb",
+        "map",
+        "moon",
+        "paper-plane",
+        "square-full",
+        "star",
+        "sun",
+    ];
+    var arr = [];
+    for (var i = 0; i < iconName.length; i++) {
+        var mappedObj = {
+            id: i,
+            url: "./assets/icons/".concat(iconName[i], ".svg"),
+        };
+        arr.push(mappedObj);
+    }
+    return arr;
+}
+console.log(mapIcons());
