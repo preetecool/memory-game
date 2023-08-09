@@ -52,9 +52,28 @@ function restoreMatchedCells() {
     }
 }
 function handleMatch(flippedCells) {
-    var cells = mapFlippedCells(flippedCells);
-    var matchingCells = cells[0].textContent === cells[1].textContent;
+    // const cells = mapFlippedCells(flippedCells);
+    // console.log(flippedCells);
+    // let matchingCells: boolean = false;
+    // if (localStorage.getItem("theme") === "Icons") {
+    // 	let img_1 = cells[0].querySelector!("img") as HTMLImageElement;
+    // 	let img_2 = cells[1].querySelector!("img") as HTMLImageElement;
+    // 	console.log(img_1);
+    // 	matchingCells = cells[0].img!.src === cells[1].img!.src;
+    // } else matchingCells = cells[0].textContent === cells[1].textContent;
+    // console.log(matchingCells);
     var playerTurn = Number(localStorage.getItem("player-turn"));
+    var cells = mapFlippedCells(flippedCells);
+    var matchingCells = false;
+    console.log(cells[0]);
+    if (localStorage.getItem("theme") === "Icons") {
+        if (cells[0].src && cells[1].src) {
+            matchingCells = cells[0].src === cells[1].src;
+        }
+    }
+    else {
+        matchingCells = cells[0].textContent === cells[1].textContent;
+    }
     if (matchingCells) {
         handleMatchingCells(flippedCells, cells);
         handleScore();
@@ -69,9 +88,12 @@ function handleMatch(flippedCells) {
 }
 function mapFlippedCells(flippedCells) {
     return flippedCells.map(function (el) {
+        var _a;
         var cell = {
             id: Number(el.id.split("-")[1]),
             textContent: Number(el.textContent),
+            // img: el.querySelector("img"),
+            src: (_a = el.querySelector("img")) === null || _a === void 0 ? void 0 : _a.src,
         };
         return cell;
     });
@@ -108,7 +130,6 @@ function handleScore() {
         var score = document.getElementById("player-".concat(playerTurn));
         score.innerHTML = playerStats["player_" + playerTurn].score.toString();
     }
-    // return score
 }
 function handleAttemptCount() {
     var playerStats = JSON.parse(localStorage.getItem("player-stats"));
@@ -148,8 +169,6 @@ function handlePlayerTurn(playerTurn) {
                 }
                 else {
                     playerScoreCard.classList.remove("stat-active");
-                    // playerScoreCard.style.backgroundColor = "#DFE7EC";
-                    // playerScoreCard.style.removeProperty("color");
                     var indicator = playerScoreCard.querySelector(".turn-indicator");
                     if (indicator) {
                         playerScoreCard.removeChild(indicator);

@@ -79,6 +79,7 @@
 	top: 0;
 
 	left: 0;
+	z-index: 10;
 }
 
 .cell-lg:hover,
@@ -134,4 +135,17 @@
 	z-index: -1;
 	left: 50%;
 	top: -4px;
+}
+
+.icon path {
+	fill: #fcfcfc;
+	z-index: 0;
+}
+.icon-sm {
+	width: 40px;
+	height: 40px;
+}
+.icon-lg {
+	width: 60px;
+	height: 60px;
 }

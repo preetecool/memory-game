@@ -1,7 +1,8 @@
 type cell = {
 	id: number;
-	textContent: number;
-	matched?: boolean;
+	textContent?: number;
+	// img?: HTMLImageElement;
+	src?: string;
 };
 
 type player = {
@@ -22,7 +23,6 @@ function revealCell() {
 		localStorage.removeItem("attempt");
 	}
 }
-
 function handleCellClick(e: Event) {
 	const target = e.target as HTMLElement;
 	if (target.className !== "cell-cover" || (numCellsRevealed >= 2 && matching))
@@ -71,9 +71,27 @@ function restoreMatchedCells() {
 }
 
 function handleMatch(flippedCells: HTMLElement[]) {
-	const cells = mapFlippedCells(flippedCells);
-	const matchingCells: boolean = cells[0].textContent === cells[1].textContent;
+	// const cells = mapFlippedCells(flippedCells);
+	// console.log(flippedCells);
+	// let matchingCells: boolean = false;
+	// if (localStorage.getItem("theme") === "Icons") {
+	// 	let img_1 = cells[0].querySelector!("img") as HTMLImageElement;
+	// 	let img_2 = cells[1].querySelector!("img") as HTMLImageElement;
+	// 	console.log(img_1);
+	// 	matchingCells = cells[0].img!.src === cells[1].img!.src;
+	// } else matchingCells = cells[0].textContent === cells[1].textContent;
+	// console.log(matchingCells);
 	let playerTurn = Number(localStorage.getItem("player-turn"));
+	const cells = mapFlippedCells(flippedCells);
+	let matchingCells: boolean = false;
+	console.log(cells[0]);
+	if (localStorage.getItem("theme") === "Icons") {
+		if (cells[0].src && cells[1].src) {
+			matchingCells = cells[0].src === cells[1].src;
+		}
+	} else {
+		matchingCells = cells[0].textContent === cells[1].textContent;
+	}
 
 	if (matchingCells) {
 		handleMatchingCells(flippedCells, cells);
@@ -92,6 +110,8 @@ function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
 		let cell: cell = {
 			id: Number(el.id.split("-")[1]),
 			textContent: Number(el.textContent),
+			// img: el.querySelector("img"),
+			src: el.querySelector("img")?.src,
 		};
 		return cell;
 	});
@@ -135,8 +155,6 @@ function handleScore() {
 		let score = document.getElementById(`player-${playerTurn}`)!;
 		score.innerHTML = playerStats["player_" + playerTurn].score.toString();
 	}
-
-	// return score
 }
 
 function handleAttemptCount() {
@@ -177,8 +195,7 @@ function handlePlayerTurn(playerTurn: number) {
 					playerScoreCard.appendChild(turnIndicator);
 				} else {
 					playerScoreCard.classList.remove("stat-active");
-					// playerScoreCard.style.backgroundColor = "#DFE7EC";
-					// playerScoreCard.style.removeProperty("color");
+
 					const indicator = playerScoreCard.querySelector(".turn-indicator");
 					if (indicator) {
 						playerScoreCard.removeChild(indicator);

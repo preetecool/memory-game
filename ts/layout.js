@@ -1,11 +1,17 @@
 function shuffle(array) {
     var _a;
+    if (localStorage.getItem("theme") === "Icons") {
+        array = mapIcons();
+    }
+    if (!array)
+        return [];
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         _a = [array[j], array[i]], array[i] = _a[0], array[j] = _a[1];
     }
     return array;
 }
+// console.log(shuffle());
 function generatePairs() {
     var gridSize = localStorage.getItem("grid-size");
     var numCells = gridSize === "4x4" ? 16 : 36;
@@ -15,10 +21,11 @@ function generatePairs() {
     }
     return shuffle(numsArray);
 }
-function createElement(index, cell) {
+function createElement(index, cell, url) {
     var gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
     var gameBoard = document.getElementById("game-board");
-    gameBoard.className = gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
+    gameBoard.className =
+        gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
     var div = document.createElement("div");
     gameBoard.appendChild(div);
     div.className =
@@ -26,18 +33,30 @@ function createElement(index, cell) {
             ? "cell-lg light-gray-text-xlg transition"
             : "cell-sm light-gray-text-lg transition";
     div.id = "cell-".concat(index + 1);
-    div.textContent = cell.toString();
     var cellDiv = document.getElementById("cell-".concat(index + 1));
-    var coverDiv = div.cloneNode();
-    if (coverDiv instanceof HTMLElement) {
-        coverDiv.className = "cell-cover";
+    var coverDiv = createDivWithClass("cell-cover", "");
+    if (localStorage.getItem("theme") === "Icons") {
+        var icon = document.createElement("img");
+        icon.src = url;
+        icon.className = gridVal == "sm" ? "icon icon-lg" : "icon icon-sm";
+        div.appendChild(icon);
+    }
+    if (localStorage.getItem("theme") === "Numbers") {
+        div.textContent = cell.toString();
     }
     cellDiv.appendChild(coverDiv);
 }
 function setGridFromStorage() {
-    JSON.parse(localStorage.getItem("cells")).forEach(function (cell, index) {
-        createElement(index, cell);
-    });
+    var icons = localStorage.getItem("theme") === "Icons";
+    var cells = JSON.parse(localStorage.getItem("cells"));
+    for (var i = 0; i < cells.length; i++) {
+        if (icons) {
+            createElement(i, undefined, cells[i].url);
+        }
+        else {
+            createElement(i, cells[i]);
+        }
+    }
 }
 function setGrid() {
     if (localStorage.getItem("game-status") !== "started")
@@ -48,10 +67,18 @@ function setGrid() {
         return;
     }
     else if (!localStorage.getItem("cells")) {
-        var cells = generatePairs();
-        localStorage.setItem("cells", JSON.stringify(cells));
-        for (var i = 0; i < cells.length; i++) {
-            createElement(i, cells[i]);
+        if (localStorage.getItem("theme") === "Icons") {
+            var cells = shuffle();
+            for (var i = 0; i < cells.length; i++) {
+                createElement(i, undefined, cells[i].url);
+            }
+            localStorage.setItem("cells", JSON.stringify(shuffle()));
+        }
+        if (localStorage.getItem("theme") === "Numbers") {
+            var cells = generatePairs();
+            for (var i = 0; i < cells.length; i++) {
+                createElement(i, cells[i]);
+            }
         }
     }
     return;
@@ -117,7 +144,9 @@ function getPlayerAttempts() {
     return (((_a = playerStats.player_1) === null || _a === void 0 ? void 0 : _a.attempts) || 0).toString();
 }
 function mapIcons() {
-    var iconName = [
+    var _a;
+    var gridSize = localStorage.getItem("grid-size");
+    var icons = [
         "bell",
         "circle",
         "font-awesome",
@@ -134,15 +163,12 @@ function mapIcons() {
         "square-full",
         "star",
         "sun",
-    ];
-    var arr = [];
-    for (var i = 0; i < iconName.length; i++) {
-        var mappedObj = {
-            id: i,
-            url: "./assets/icons/".concat(iconName[i], ".svg"),
-        };
-        arr.push(mappedObj);
-    }
-    return arr;
+        "compass",
+        "newspaper",
+    ].map(function (id, idx) { return ({ id: idx, url: "./assets/icons/".concat(id, ".svg") }); });
+    var grid16 = (_a = icons.slice(0, 8)).concat.apply(_a, icons.slice(0, 8));
+    var grid36 = icons.concat.apply(icons, icons);
+    var map = gridSize === "4x4" ? grid16 : grid36;
+    return map;
 }
-console.log(mapIcons());
+// console.log(mapIcons());
