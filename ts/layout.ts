@@ -45,6 +45,7 @@ function createElement(index: number, cell?: number, url?: string) {
 		let icon = document.createElement("img");
 		icon.src = url!;
 		icon.className = gridVal == "sm" ? "icon icon-lg" : "icon icon-sm";
+		icon.style.fill = "#fcfcfc";
 		div.appendChild(icon);
 	}
 	if (localStorage.getItem("theme") === "Numbers") {

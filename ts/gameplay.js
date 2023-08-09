@@ -22,7 +22,7 @@ function handleCellClick(e) {
         setTimeout(function () {
             handleMatch(flippedElements);
             resetMatchingState();
-        }, 400);
+        }, 600);
     }
 }
 function resetMatchingState() {

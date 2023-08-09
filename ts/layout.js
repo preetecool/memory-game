@@ -39,6 +39,7 @@ function createElement(index, cell, url) {
         var icon = document.createElement("img");
         icon.src = url;
         icon.className = gridVal == "sm" ? "icon icon-lg" : "icon icon-sm";
+        icon.style.fill = "white";
         div.appendChild(icon);
     }
     if (localStorage.getItem("theme") === "Numbers") {

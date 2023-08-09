@@ -38,7 +38,7 @@ function handleCellClick(e: Event) {
 		setTimeout(() => {
 			handleMatch(flippedElements);
 			resetMatchingState();
-		}, 400);
+		}, 600);
 	}
 }
 
