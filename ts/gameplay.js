@@ -52,7 +52,7 @@ function restoreMatchedCells() {
     }
 }
 function handleMatch(flippedCells) {
-    handleGameOver();
+    // handleGameOver();
     var playerTurn = Number(localStorage.getItem("player-turn"));
     var cells = mapFlippedCells(flippedCells);
     var matchingCells = false;
@@ -300,33 +300,8 @@ function createModal(parent, numPlayers, winners) {
     title.textContent = numPlayers === 1 ? "You Did it!" : winner;
     modal.appendChild(title);
     title.appendChild(subtitle);
-    // modal.appendChild(buttonDiv);
     return modal;
 }
-// function createPlayerResult(
-// 	parent: HTMLElement,
-// 	label: string,
-// 	score: number | string | null,
-// 	winners?: string[]
-// ) {
-// 	let div = document.createElement("div");
-// 	let id = label.toLowerCase().replace(" ", "_") + "_gg";
-// 	div.id = id;
-// 	div.className = "player-result";
-// 	if (winners && winners.includes(label.replace(" ", "_"))) {
-// 		div.className += " winner white-text";
-// 		label += " (Winner!)";
-// 	}
-// 	let labeldiv = document.createElement("div");
-// 	labeldiv.className = "stat-label";
-// 	labeldiv.textContent = label;
-// 	let scoreElem = document.createElement("div");
-// 	scoreElem.className = "blue-text-32";
-// 	scoreElem.textContent = String(score) + " Pairs";
-// 	div.appendChild(labeldiv);
-// 	div.appendChild(scoreElem);
-// 	parent.appendChild(div);
-// }
 function createPlayerResult(parent, label, score, winners) {
     var div = document.createElement("div");
     var id = label.toLowerCase().replace(" ", "_");
@@ -342,16 +317,6 @@ function createPlayerResult(parent, label, score, winners) {
         div.className += " winner white-text";
         label += " (Winner!)";
     }
-    // winners?.forEach((winner) => {
-    // 	let winnerDiv = document.getElementById(`${winner}_gg`);
-    // 	if (winnerDiv) {
-    // 		winnerDiv!.className = "player-result winner white-text";
-    // 	} else {
-    // 		console.warn("Element " + winnerDiv + "_gg not found");
-    // 	}
-    // 	console.log(winner);
-    // 	labeldiv.textContent = label + " (Winner!)";
-    // });
     console.log(winners);
     div.appendChild(labeldiv);
     div.appendChild(scoreElem);

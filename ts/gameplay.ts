@@ -70,7 +70,7 @@ function restoreMatchedCells() {
 }
 
 function handleMatch(flippedCells: HTMLElement[]) {
-	handleGameOver();
+	// handleGameOver();
 	let playerTurn = Number(localStorage.getItem("player-turn"));
 	const cells = mapFlippedCells(flippedCells);
 	let matchingCells: boolean = false;
