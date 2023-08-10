@@ -45,82 +45,92 @@
 		<title>Memory game</title>
 	</head>
 	<body>
-		<div
-			class="setup"
-			id="setup-screen"
-		>
-			<div class="mask-overlay_setup"></div>
-			<div class="title_setup">memory</div>
-			<form
-				id="settings"
-				class="popup_setup"
-			>
-				<div class="game-settings">
-					<div class="setup-options">
-						<div class="option-label_setup">Select Card Theme</div>
-						<div
-							class="option-buttons_setup"
-							id="theme_buttons"
-						></div>
-					</div>
-
-					<div class="setup-options">
-						<div class="option-label_setup">Number of Players</div>
-						<div
-							class="option-buttons_setup"
-							id="num-players_buttons"
-						></div>
-					</div>
-
-					<div class="setup-options">
-						<div class="option-label_setup">Grid Size</div>
-						<div
-							class="option-buttons_setup"
-							id="grid-size_buttons"
-						></div>
-					</div>
-
-					<button
-						type="button"
-						class="start-game_button orange"
-						id="start-game_button"
-						onclick="handleSubmit(event); setGrid(); setPlayerStats(); handleTimer();"
-					>
-						Start Game
-					</button>
-				</div>
-			</form>
-		</div>
-
-		<div
-			class="game-body"
-			id="game-body"
-		>
+		<div>
 			<div
-				class="game-container"
-				id="game-container"
+				class="main"
+				id="main"
 			>
-				<div class="header">
-					<div class="blue-text-lg">memory</div>
-					<div class="game-button_wrapper">
-						<button
-							class="game-button orange white-text-med t transition"
-							id="restart"
-							onclick="handleReset();"
-						>
-							Restart
-						</button>
-						<button class="game-button blue-text-med transition" onclick="newGame();">
-							New Game
-						</button>
-					</div>
-				</div>
 				<div
-					class="game-board"
-					id="game-board"
+					class="setup"
+					id="setup-screen"
 				>
+					<div class="mask-overlay_setup"></div>
+					<div class="title_setup">memory</div>
+					<form
+						id="settings"
+						class="popup_setup"
+					>
+						<div class="game-settings">
+							<div class="setup-options">
+								<div class="option-label_setup">Select Card Theme</div>
+								<div
+									class="option-buttons_setup"
+									id="theme_buttons"
+								></div>
+							</div>
+
+							<div class="setup-options">
+								<div class="option-label_setup">Number of Players</div>
+								<div
+									class="option-buttons_setup"
+									id="num-players_buttons"
+								></div>
+							</div>
+
+							<div class="setup-options">
+								<div class="option-label_setup">Grid Size</div>
+								<div
+									class="option-buttons_setup"
+									id="grid-size_buttons"
+								></div>
+							</div>
+
+							<button
+								type="button"
+								class="start-game_button orange"
+								id="start-game_button"
+								onclick="handleSubmit(event); setGrid(); setPlayerStats(); handleTimer();"
+							>
+								Start Game
+							</button>
+						</div>
+					</form>
 				</div>
-				<div class="player-stats" id="stats">
+
+				<div
+					class="game-body"
+					id="game-body"
+				>
+					<div
+						class="game-container"
+						id="game-container"
+					>
+						<div class="header">
+							<div class="blue-text-lg">memory</div>
+							<div class="game-button_wrapper">
+								<button
+									class="game-button orange white-text-med t transition"
+									id="restart"
+									onclick="handleReset();"
+								>
+									Restart
+								</button>
+								<button
+									class="game-button blue-text-med transition"
+									onclick="newGame();"
+								>
+									New Game
+								</button>
+							</div>
+						</div>
+						<div
+							class="game-board"
+							id="game-board"
+						></div>
+						<div
+							class="player-stats"
+							id="stats"
+						></div>
 					</div>
 				</div>
 			</div>
@@ -135,7 +145,7 @@
 			createRadioButtons("grid-size_buttons", 2, ["4x4", "6x6"]),
 			setGrid(),
 			revealCell(),
-			setPlayerStats(),
-		);	
+			setPlayerStats()
+		);
 	</script>
 </html>

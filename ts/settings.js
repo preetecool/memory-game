@@ -1,11 +1,18 @@
-function checkGameStatus() {
+function checkGameStatus(status) {
     var gameStatus = localStorage.getItem("game-status");
+    var setupScreen = document.getElementById("setup-screen");
     if (gameStatus === "started") {
-        var setupScreen = document.getElementById("setup-screen");
         if (!setupScreen) {
             throw new Error("Setup Screen not Found");
         }
         setupScreen.style.display = "none";
+    }
+    if (gameStatus === "finished") {
+        setupScreen.style.display = "none";
+    }
+    if (status === "finished") {
+        var event_1 = new CustomEvent("gameFinished");
+        document.dispatchEvent(event_1);
     }
 }
 function createRadioButtons(id, numButtons, labels) {
@@ -29,7 +36,6 @@ function createRadioButtons(id, numButtons, labels) {
     }
 }
 function getFormElements() {
-    // if (localStorage.getItem("game-status") === "started") return;
     var form = document.getElementById("settings");
     if (!form) {
         throw new Error("Form not found.");
@@ -54,20 +60,20 @@ function handleSubmit(event) {
     var playerStats = {
         player_1: {
             score: 0,
-            attempts: 0,
+            attempts: 0
         },
         player_2: {
             score: 0,
-            attempts: 0,
+            attempts: 0
         },
         player_3: {
             score: 0,
-            attempts: 0,
+            attempts: 0
         },
         player_4: {
             score: 0,
-            attempts: 0,
-        },
+            attempts: 0
+        }
     };
     localStorage.setItem("theme", theme);
     localStorage.setItem("num-player", numPlayers);

@@ -11,7 +11,6 @@ function shuffle(array) {
     }
     return array;
 }
-// console.log(shuffle());
 function generatePairs() {
     var gridSize = localStorage.getItem("grid-size");
     var numCells = gridSize === "4x4" ? 16 : 36;
@@ -24,8 +23,7 @@ function generatePairs() {
 function createElement(index, cell, url) {
     var gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
     var gameBoard = document.getElementById("game-board");
-    gameBoard.className =
-        gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
+    gameBoard.className = gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
     var div = document.createElement("div");
     gameBoard.appendChild(div);
     div.className =
@@ -39,7 +37,7 @@ function createElement(index, cell, url) {
         var icon = document.createElement("img");
         icon.src = url;
         icon.className = gridVal == "sm" ? "icon icon-lg" : "icon icon-sm";
-        icon.style.fill = "white";
+        icon.style.fill = "#fcfcfc";
         div.appendChild(icon);
     }
     if (localStorage.getItem("theme") === "Numbers") {
@@ -61,9 +59,9 @@ function setGridFromStorage() {
     // localStorage.setItem("cells", JSON.stringify(cells));
 }
 function setGrid() {
-    if (localStorage.getItem("game-status") !== "started")
-        return;
-    else if (localStorage.getItem("cells") || localStorage.getItem("match")) {
+    var gameStatus = localStorage.getItem("game-status");
+    // if (gameStatus !== "started" || gameStatus !== "finished") return;
+    if (localStorage.getItem("cells") || localStorage.getItem("match")) {
         setGridFromStorage();
         setPlayerStats;
         return;
@@ -94,6 +92,9 @@ function createDivWithClass(className, textContent) {
     return div;
 }
 function setPlayerStats() {
+    if (localStorage.getItem("game-status") === null) {
+        localStorage.removeItem("player-stats");
+    }
     var statsDiv = document.getElementById("stats");
     var numPlayers = localStorage.getItem("num-player");
     if (!statsDiv)
@@ -108,12 +109,14 @@ function setPlayerStats() {
     if (numPlayers !== "1") {
         var stats = JSON.parse(localStorage.getItem("player-stats") || "{}");
         for (var i = 1; i <= Number(numPlayers); i++) {
-            statsDiv.appendChild(createStatItem("Player ".concat(i), "player-".concat(i), stats["player_".concat(i)].score || "0"));
+            statsDiv.appendChild(createStatItem("Player ".concat(i), "player_".concat(i), stats["player_".concat(i)].score || "0"));
         }
         if (localStorage.getItem("player-turn")) {
             var playerTurn = Number(localStorage.getItem("player-turn"));
             var turnIndicator = document.createElement("div");
-            var childElement = statsDiv.querySelector("#player-".concat(playerTurn, "-card"));
+            var childElement = statsDiv.querySelector("#player_".concat(playerTurn, "-card"));
+            var firstChild = childElement.children[0];
+            firstChild.className = "stat-label white-text";
             childElement === null || childElement === void 0 ? void 0 : childElement.classList.add("stat-active");
             turnIndicator.className = "turn-indicator";
             if (childElement) {
@@ -167,11 +170,10 @@ function mapIcons() {
         "star",
         "sun",
         "compass",
-        "newspaper",
+        "newspaper"
     ].map(function (id, idx) { return ({ id: idx, url: "./assets/icons/".concat(id, ".svg") }); });
     var grid16 = (_a = icons.slice(0, 8)).concat.apply(_a, icons.slice(0, 8));
     var grid36 = icons.concat.apply(icons, icons);
     var map = gridSize === "4x4" ? grid16 : grid36;
     return map;
 }
-// console.log(mapIcons());

@@ -25,8 +25,7 @@ function revealCell() {
 }
 function handleCellClick(e: Event) {
 	const target = e.target as HTMLElement;
-	if (target.className !== "cell-cover" || (numCellsRevealed >= 2 && matching))
-		return;
+	if (target.className !== "cell-cover" || (numCellsRevealed >= 2 && matching)) return;
 
 	localStorage.setItem("attempt", "true");
 	revealTargetCell(target);
@@ -71,10 +70,11 @@ function restoreMatchedCells() {
 }
 
 function handleMatch(flippedCells: HTMLElement[]) {
+	handleGameOver();
 	let playerTurn = Number(localStorage.getItem("player-turn"));
 	const cells = mapFlippedCells(flippedCells);
 	let matchingCells: boolean = false;
-	console.log(cells[0]);
+
 	if (localStorage.getItem("theme") === "Icons") {
 		if (cells[0].src && cells[1].src) {
 			matchingCells = cells[0].src === cells[1].src;
@@ -92,7 +92,20 @@ function handleMatch(flippedCells: HTMLElement[]) {
 		handleAttemptCount();
 		handlePlayerTurn((playerTurn += 1));
 	}
+	if (checkForMatched()) {
+		handleGameOver();
+	}
+
 	localStorage.removeItem("attempt");
+}
+
+function checkForMatched(): boolean {
+	let matched = localStorage.getItem("match");
+	let allCells = JSON.parse(localStorage.getItem("cells")!);
+	if (matched && allCells.length === JSON.parse(matched).length) {
+		return true;
+	}
+	return false;
 }
 
 function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
@@ -101,7 +114,7 @@ function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
 			id: Number(el.id.split("-")[1]),
 			textContent: Number(el.textContent),
 			// img: el.querySelector("img"),
-			src: el.querySelector("img")?.src,
+			src: el.querySelector("img")?.src
 		};
 		return cell;
 	});
@@ -109,8 +122,23 @@ function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
 
 function updatePlayerStat(player: string, field: keyof player, value: number) {
 	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
+	let numPlayers = JSON.parse(localStorage.getItem("num-player")!);
+	let playerTurn = JSON.parse(localStorage.getItem("player-turn")!);
 	playerStats[player][field] += value;
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
+	if (field === "score" && numPlayers !== "1") {
+		let score = document.getElementById(player);
+		if (score) {
+			score.textContent = playerStats[player].score;
+		}
+	}
+	if (field === "attempts") {
+		if (numPlayers === 1) {
+			let moves = document.getElementById("moves")!;
+			moves.textContent = playerStats.player_1.attempts.toString();
+		} else {
+		}
+	}
 }
 
 function handleMatchingCells(flippedCells: HTMLElement[], cells: cell[]) {
@@ -137,29 +165,15 @@ function handleNonMatchingCells(flippedCells: HTMLElement[]) {
 }
 
 function handleScore() {
-	let playerTurn = localStorage.getItem("player-turn");
-	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
-	playerStats["player_" + playerTurn].score++;
-	localStorage.setItem("player-stats", JSON.stringify(playerStats));
-	if (localStorage.getItem("num-player") !== "1") {
-		let score = document.getElementById(`player-${playerTurn}`)!;
-		score.innerHTML = playerStats["player_" + playerTurn].score.toString();
-	}
+	updatePlayerStat(`player_${localStorage.getItem("player-turn")}`, "score", 1);
 }
 
 function handleAttemptCount() {
-	const playerStats = JSON.parse(localStorage.getItem("player-stats")!);
 	if (localStorage.getItem("num-player") === "1") {
-		playerStats.player_1.attempts++;
-
-		localStorage.setItem("player-stats", JSON.stringify(playerStats));
-		let moves = document.getElementById("moves")!;
-		moves.textContent = playerStats.player_1.attempts.toString();
+		updatePlayerStat("player_1", "attempts", 1);
 		return;
 	} else {
-		const playerTurn = JSON.parse(localStorage.getItem("player-turn")!);
-		playerStats[`player_${playerTurn}`].attempts++;
-		localStorage.setItem("player-stats", JSON.stringify(playerStats));
+		updatePlayerStat(`player_${localStorage.getItem("player-turn")}`, "attempts", 1);
 	}
 }
 
@@ -174,7 +188,7 @@ function handlePlayerTurn(playerTurn: number) {
 		}
 		localStorage.setItem("player-turn", playerTurn.toString());
 		for (let i = 1; i <= Number(numPlayers); i++) {
-			let cardId = `player-${i}-card`; // Use 'i' instead of 'playerTurn'
+			let cardId = `player_${i}-card`;
 			let playerScoreCard = document.getElementById(cardId);
 			let turnIndicator = document.createElement("div");
 			turnIndicator.className = "turn-indicator";
@@ -195,13 +209,10 @@ function handlePlayerTurn(playerTurn: number) {
 		}
 	}
 }
-
 function handleTimer(): number | undefined {
 	if (localStorage.getItem("num-player") !== "1") return;
 	let timerValue = localStorage.getItem("timer");
-	let [minutes, decaseconds, seconds] = timerValue
-		? JSON.parse(timerValue)
-		: [0, 0, 0];
+	let [minutes, decaseconds, seconds] = timerValue ? JSON.parse(timerValue) : [0, 0, 0];
 
 	// Function to update the display
 	const updateDisplay = () => {
@@ -223,10 +234,7 @@ function handleTimer(): number | undefined {
 			decaseconds = 0;
 		}
 
-		localStorage.setItem(
-			"timer",
-			JSON.stringify([minutes, decaseconds, seconds])
-		);
+		localStorage.setItem("timer", JSON.stringify([minutes, decaseconds, seconds]));
 		updateDisplay();
 	}, 1000);
 
@@ -240,6 +248,8 @@ function handleReset() {
 	localStorage.removeItem("timer");
 	localStorage.removeItem("cells");
 	localStorage.removeItem("match");
+	localStorage.setItem("game-status", "started");
+	localStorage.setItem("timer", "[0,0,0]");
 
 	let playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
 	for (let player in playerStats) {
@@ -253,5 +263,134 @@ timerInterval = handleTimer();
 
 function newGame() {
 	localStorage.clear();
+	document.getElementById("game-body")!.style.display = "block";
 	location.reload();
+}
+function handleGameOver() {
+	clearInterval(timerInterval);
+	localStorage.setItem("game-status", "finished");
+
+	handleWinners();
+}
+function handleWinners() {
+	let playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
+	let numPlayers = Number(localStorage.getItem("num-player"));
+	let parentDiv = document.getElementById("main")!;
+
+	let modalBg = createModalBackground(parentDiv);
+	let modal = undefined;
+	let winners: string[] = [];
+	if (numPlayers !== 1) {
+		let scores = {
+			player_1: playerStats.player_1.score,
+			player_2: playerStats.player_2.score,
+			player_3: playerStats.player_3.score,
+			player_4: playerStats.player_4.score
+		};
+		let sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+		let topScore = sortedScores[0][1];
+
+		winners = sortedScores
+			.filter(([player, score]) => score === topScore)
+			.map(([player]) => player);
+
+		modal = createModal(modalBg, numPlayers, winners);
+		for (let i = 0; i <= numPlayers; i++) {
+			createPlayerResult(
+				modal,
+				`Player ${i + 1}`,
+				playerStats[`player_${i + 1}`].score,
+				winners
+			);
+		}
+	} else {
+		winners.push(playerStats["player_1"]);
+		modal = createModal(modalBg, numPlayers, winners);
+		createPlayerResult(
+			modal,
+			"Time Elapsed",
+			document.getElementById("stopwatch")!.textContent
+		);
+		createPlayerResult(modal, "Moves Taken", playerStats[`player_1`].attempts);
+	}
+	let buttonDiv = document.createElement("div");
+	buttonDiv.className = "option-buttons_setup";
+	buttonDiv.style.height = "52px !important";
+
+	createButton("Restart", buttonDiv, "orange", handleReset);
+	createButton("Setup New Game", buttonDiv, "#DFE7EC", newGame, "#304859");
+	modal.appendChild(buttonDiv);
+
+	let span = document.createElement("span");
+}
+function createModalBackground(parent: HTMLElement) {
+	let modalBg = document.createElement("div");
+	modalBg.className = "setup modal-bg";
+	parent.insertBefore(modalBg, parent.firstChild);
+	return modalBg;
+}
+
+function createModal(parent: HTMLElement, numPlayers: number, winners: string[]) {
+	let modal = document.createElement("div");
+	modal.className = "popup_setup game-settings modal";
+	parent.appendChild(modal);
+	let title = document.createElement("h1");
+	let subtitle = document.createElement("span");
+	subtitle.className = "stat-label";
+	subtitle.textContent = "Congrats! Game complete. Results:";
+	let winner = winners.length > 1 ? "It's a tie!" : winners[0];
+	title.textContent = numPlayers === 1 ? "You Did it!" : winner;
+	modal.appendChild(title);
+	title.appendChild(subtitle);
+
+	return modal;
+}
+
+function createPlayerResult(
+	parent: HTMLElement,
+	label: string,
+	score: number | string | null,
+	winners?: string[]
+) {
+	let div = document.createElement("div");
+	let id = label.toLowerCase().replace(" ", "_");
+	div.id = id + "_gg";
+	div.className = "player-result";
+
+	let labeldiv = document.createElement("div");
+	labeldiv.className = "stat-label";
+	labeldiv.textContent = label;
+
+	let scoreElem = document.createElement("div");
+	scoreElem.className = "blue-text-32";
+	scoreElem.textContent = String(score) + " Pairs";
+
+	if (winners && winners.includes(id)) {
+		div.className += " winner white-text";
+		label += " (Winner!)";
+	}
+
+	console.log(winners);
+
+	div.appendChild(labeldiv);
+	div.appendChild(scoreElem);
+	parent.appendChild(div);
+}
+
+function createButton(
+	text: string,
+	parent: HTMLElement,
+	bgColor: string,
+	fn: (this: GlobalEventHandlers, ev: MouseEvent) => any,
+	color?: string
+) {
+	let button = document.createElement("button");
+	button.className = "radio-label btn-gameover";
+	button.style.backgroundColor = bgColor;
+	if (color) {
+		button.style.color = color;
+	}
+	button.textContent = text;
+	button.onclick = fn;
+	parent.appendChild(button);
 }

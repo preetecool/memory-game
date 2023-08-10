@@ -13,7 +13,6 @@ function shuffle<T>(array?: T[]): T[] {
 
 	return array;
 }
-// console.log(shuffle());
 
 function generatePairs(): number[] {
 	const gridSize = localStorage.getItem("grid-size");
@@ -28,8 +27,7 @@ function generatePairs(): number[] {
 function createElement(index: number, cell?: number, url?: string) {
 	let gridVal = localStorage.getItem("grid-size") === "4x4" ? "sm" : "lg";
 	let gameBoard: HTMLElement = document.getElementById("game-board")!;
-	gameBoard.className =
-		gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
+	gameBoard.className = gridVal == "sm" ? "game-board board-sm" : "game-board board-lg";
 	let div = document.createElement("div");
 
 	gameBoard.appendChild(div);
@@ -69,8 +67,9 @@ function setGridFromStorage() {
 }
 
 function setGrid(): undefined {
-	if (localStorage.getItem("game-status") !== "started") return;
-	else if (localStorage.getItem("cells") || localStorage.getItem("match")) {
+	let gameStatus = localStorage.getItem("game-status");
+	// if (gameStatus !== "started" || gameStatus !== "finished") return;
+	if (localStorage.getItem("cells") || localStorage.getItem("match")) {
 		setGridFromStorage();
 		setPlayerStats;
 		return;
@@ -100,6 +99,9 @@ function createDivWithClass(className: string, textContent?: string) {
 }
 
 function setPlayerStats() {
+	if (localStorage.getItem("game-status") === null) {
+		localStorage.removeItem("player-stats");
+	}
 	const statsDiv = document.getElementById("stats");
 	let numPlayers: string = localStorage.getItem("num-player")!;
 	if (!statsDiv) return;
@@ -122,11 +124,7 @@ function setPlayerStats() {
 
 		for (let i = 1; i <= Number(numPlayers); i++) {
 			statsDiv.appendChild(
-				createStatItem(
-					`Player ${i}`,
-					`player-${i}`,
-					stats[`player_${i}`].score || "0"
-				)
+				createStatItem(`Player ${i}`, `player_${i}`, stats[`player_${i}`].score || "0")
 			);
 		}
 
@@ -134,7 +132,10 @@ function setPlayerStats() {
 			let playerTurn = Number(localStorage.getItem("player-turn"));
 			let turnIndicator = document.createElement("div");
 
-			let childElement = statsDiv.querySelector(`#player-${playerTurn}-card`);
+			let childElement = statsDiv.querySelector(`#player_${playerTurn}-card`);
+			let firstChild = childElement!.children[0] as HTMLElement;
+			firstChild.className = "stat-label white-text";
+
 			childElement?.classList.add("stat-active");
 			turnIndicator.className = "turn-indicator";
 			if (childElement) {
@@ -191,7 +192,7 @@ function mapIcons(): Icon[] {
 		"star",
 		"sun",
 		"compass",
-		"newspaper",
+		"newspaper"
 	].map((id, idx) => ({ id: idx, url: `./assets/icons/${id}.svg` }));
 	let grid16 = icons.slice(0, 8).concat(...icons.slice(0, 8));
 	let grid36 = icons.concat(...icons);
@@ -199,4 +200,3 @@ function mapIcons(): Icon[] {
 
 	return map;
 }
-// console.log(mapIcons());

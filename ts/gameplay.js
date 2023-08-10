@@ -52,10 +52,10 @@ function restoreMatchedCells() {
     }
 }
 function handleMatch(flippedCells) {
+    handleGameOver();
     var playerTurn = Number(localStorage.getItem("player-turn"));
     var cells = mapFlippedCells(flippedCells);
     var matchingCells = false;
-    console.log(cells[0]);
     if (localStorage.getItem("theme") === "Icons") {
         if (cells[0].src && cells[1].src) {
             matchingCells = cells[0].src === cells[1].src;
@@ -74,7 +74,18 @@ function handleMatch(flippedCells) {
         handleAttemptCount();
         handlePlayerTurn((playerTurn += 1));
     }
+    if (checkForMatched()) {
+        handleGameOver();
+    }
     localStorage.removeItem("attempt");
+}
+function checkForMatched() {
+    var matched = localStorage.getItem("match");
+    var allCells = JSON.parse(localStorage.getItem("cells"));
+    if (matched && allCells.length === JSON.parse(matched).length) {
+        return true;
+    }
+    return false;
 }
 function mapFlippedCells(flippedCells) {
     return flippedCells.map(function (el) {
@@ -83,15 +94,31 @@ function mapFlippedCells(flippedCells) {
             id: Number(el.id.split("-")[1]),
             textContent: Number(el.textContent),
             // img: el.querySelector("img"),
-            src: (_a = el.querySelector("img")) === null || _a === void 0 ? void 0 : _a.src,
+            src: (_a = el.querySelector("img")) === null || _a === void 0 ? void 0 : _a.src
         };
         return cell;
     });
 }
 function updatePlayerStat(player, field, value) {
     var playerStats = JSON.parse(localStorage.getItem("player-stats"));
+    var numPlayers = JSON.parse(localStorage.getItem("num-player"));
+    var playerTurn = JSON.parse(localStorage.getItem("player-turn"));
     playerStats[player][field] += value;
     localStorage.setItem("player-stats", JSON.stringify(playerStats));
+    if (field === "score" && numPlayers !== "1") {
+        var score = document.getElementById(player);
+        if (score) {
+            score.textContent = playerStats[player].score;
+        }
+    }
+    if (field === "attempts") {
+        if (numPlayers === 1) {
+            var moves = document.getElementById("moves");
+            moves.textContent = playerStats.player_1.attempts.toString();
+        }
+        else {
+        }
+    }
 }
 function handleMatchingCells(flippedCells, cells) {
     changeBackgroundColor(flippedCells, "#bcced9");
@@ -112,28 +139,15 @@ function handleNonMatchingCells(flippedCells) {
     });
 }
 function handleScore() {
-    var playerTurn = localStorage.getItem("player-turn");
-    var playerStats = JSON.parse(localStorage.getItem("player-stats"));
-    playerStats["player_" + playerTurn].score++;
-    localStorage.setItem("player-stats", JSON.stringify(playerStats));
-    if (localStorage.getItem("num-player") !== "1") {
-        var score = document.getElementById("player-".concat(playerTurn));
-        score.innerHTML = playerStats["player_" + playerTurn].score.toString();
-    }
+    updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "score", 1);
 }
 function handleAttemptCount() {
-    var playerStats = JSON.parse(localStorage.getItem("player-stats"));
     if (localStorage.getItem("num-player") === "1") {
-        playerStats.player_1.attempts++;
-        localStorage.setItem("player-stats", JSON.stringify(playerStats));
-        var moves = document.getElementById("moves");
-        moves.textContent = playerStats.player_1.attempts.toString();
+        updatePlayerStat("player_1", "attempts", 1);
         return;
     }
     else {
-        var playerTurn = JSON.parse(localStorage.getItem("player-turn"));
-        playerStats["player_".concat(playerTurn)].attempts++;
-        localStorage.setItem("player-stats", JSON.stringify(playerStats));
+        updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "attempts", 1);
     }
 }
 function handlePlayerTurn(playerTurn) {
@@ -148,7 +162,7 @@ function handlePlayerTurn(playerTurn) {
         }
         localStorage.setItem("player-turn", playerTurn.toString());
         for (var i = 1; i <= Number(numPlayers); i++) {
-            var cardId = "player-".concat(i, "-card"); // Use 'i' instead of 'playerTurn'
+            var cardId = "player_".concat(i, "-card");
             var playerScoreCard = document.getElementById(cardId);
             var turnIndicator = document.createElement("div");
             turnIndicator.className = "turn-indicator";
@@ -172,9 +186,7 @@ function handleTimer() {
     if (localStorage.getItem("num-player") !== "1")
         return;
     var timerValue = localStorage.getItem("timer");
-    var _a = timerValue
-        ? JSON.parse(timerValue)
-        : [0, 0, 0], minutes = _a[0], decaseconds = _a[1], seconds = _a[2];
+    var _a = timerValue ? JSON.parse(timerValue) : [0, 0, 0], minutes = _a[0], decaseconds = _a[1], seconds = _a[2];
     // Function to update the display
     var updateDisplay = function () {
         var timerElement = document.getElementById("stopwatch");
@@ -205,6 +217,8 @@ function handleReset() {
     localStorage.removeItem("timer");
     localStorage.removeItem("cells");
     localStorage.removeItem("match");
+    localStorage.setItem("game-status", "started");
+    localStorage.setItem("timer", "[0,0,0]");
     var playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
     for (var player in playerStats) {
         playerStats[player].score = 0;
@@ -216,5 +230,141 @@ function handleReset() {
 timerInterval = handleTimer();
 function newGame() {
     localStorage.clear();
+    document.getElementById("game-body").style.display = "block";
     location.reload();
+}
+function handleGameOver() {
+    clearInterval(timerInterval);
+    localStorage.setItem("game-status", "finished");
+    handleWinners();
+}
+function handleWinners() {
+    var playerStats = JSON.parse(localStorage.getItem("player-stats") || "{}");
+    var numPlayers = Number(localStorage.getItem("num-player"));
+    var parentDiv = document.getElementById("main");
+    var modalBg = createModalBackground(parentDiv);
+    var modal = undefined;
+    var winners = [];
+    if (numPlayers !== 1) {
+        var scores = {
+            player_1: playerStats.player_1.score,
+            player_2: playerStats.player_2.score,
+            player_3: playerStats.player_3.score,
+            player_4: playerStats.player_4.score
+        };
+        var sortedScores = Object.entries(scores).sort(function (a, b) { return b[1] - a[1]; });
+        var topScore_1 = sortedScores[0][1];
+        winners = sortedScores
+            .filter(function (_a) {
+            var player = _a[0], score = _a[1];
+            return score === topScore_1;
+        })
+            .map(function (_a) {
+            var player = _a[0];
+            return player;
+        });
+        modal = createModal(modalBg, numPlayers, winners);
+        for (var i = 0; i <= numPlayers; i++) {
+            createPlayerResult(modal, "Player ".concat(i + 1), playerStats["player_".concat(i + 1)].score, winners);
+        }
+    }
+    else {
+        winners.push(playerStats["player_1"]);
+        modal = createModal(modalBg, numPlayers, winners);
+        createPlayerResult(modal, "Time Elapsed", document.getElementById("stopwatch").textContent);
+        createPlayerResult(modal, "Moves Taken", playerStats["player_1"].attempts);
+    }
+    var buttonDiv = document.createElement("div");
+    buttonDiv.className = "option-buttons_setup";
+    buttonDiv.style.height = "52px !important";
+    createButton("Restart", buttonDiv, "orange", handleReset);
+    createButton("Setup New Game", buttonDiv, "#DFE7EC", newGame, "#304859");
+    modal.appendChild(buttonDiv);
+    var span = document.createElement("span");
+}
+function createModalBackground(parent) {
+    var modalBg = document.createElement("div");
+    modalBg.className = "setup modal-bg";
+    parent.insertBefore(modalBg, parent.firstChild);
+    return modalBg;
+}
+function createModal(parent, numPlayers, winners) {
+    var modal = document.createElement("div");
+    modal.className = "popup_setup game-settings modal";
+    parent.appendChild(modal);
+    var title = document.createElement("h1");
+    var subtitle = document.createElement("span");
+    subtitle.className = "stat-label";
+    subtitle.textContent = "Congrats! Game complete. Results:";
+    var winner = winners.length > 1 ? "It's a tie!" : winners[0];
+    title.textContent = numPlayers === 1 ? "You Did it!" : winner;
+    modal.appendChild(title);
+    title.appendChild(subtitle);
+    // modal.appendChild(buttonDiv);
+    return modal;
+}
+// function createPlayerResult(
+// 	parent: HTMLElement,
+// 	label: string,
+// 	score: number | string | null,
+// 	winners?: string[]
+// ) {
+// 	let div = document.createElement("div");
+// 	let id = label.toLowerCase().replace(" ", "_") + "_gg";
+// 	div.id = id;
+// 	div.className = "player-result";
+// 	if (winners && winners.includes(label.replace(" ", "_"))) {
+// 		div.className += " winner white-text";
+// 		label += " (Winner!)";
+// 	}
+// 	let labeldiv = document.createElement("div");
+// 	labeldiv.className = "stat-label";
+// 	labeldiv.textContent = label;
+// 	let scoreElem = document.createElement("div");
+// 	scoreElem.className = "blue-text-32";
+// 	scoreElem.textContent = String(score) + " Pairs";
+// 	div.appendChild(labeldiv);
+// 	div.appendChild(scoreElem);
+// 	parent.appendChild(div);
+// }
+function createPlayerResult(parent, label, score, winners) {
+    var div = document.createElement("div");
+    var id = label.toLowerCase().replace(" ", "_");
+    div.id = id + "_gg";
+    div.className = "player-result";
+    var labeldiv = document.createElement("div");
+    labeldiv.className = "stat-label";
+    labeldiv.textContent = label;
+    var scoreElem = document.createElement("div");
+    scoreElem.className = "blue-text-32";
+    scoreElem.textContent = String(score) + " Pairs";
+    if (winners && winners.includes(id)) {
+        div.className += " winner white-text";
+        label += " (Winner!)";
+    }
+    // winners?.forEach((winner) => {
+    // 	let winnerDiv = document.getElementById(`${winner}_gg`);
+    // 	if (winnerDiv) {
+    // 		winnerDiv!.className = "player-result winner white-text";
+    // 	} else {
+    // 		console.warn("Element " + winnerDiv + "_gg not found");
+    // 	}
+    // 	console.log(winner);
+    // 	labeldiv.textContent = label + " (Winner!)";
+    // });
+    console.log(winners);
+    div.appendChild(labeldiv);
+    div.appendChild(scoreElem);
+    parent.appendChild(div);
+}
+function createButton(text, parent, bgColor, fn, color) {
+    var button = document.createElement("button");
+    button.className = "radio-label btn-gameover";
+    button.style.backgroundColor = bgColor;
+    if (color) {
+        button.style.color = color;
+    }
+    button.textContent = text;
+    button.onclick = fn;
+    parent.appendChild(button);
 }

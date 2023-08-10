@@ -4,14 +4,22 @@ type FormElements = {
 	grid: string;
 };
 
-function checkGameStatus() {
+function checkGameStatus(status?: string) {
 	const gameStatus = localStorage.getItem("game-status");
+	const setupScreen = document.getElementById("setup-screen");
 	if (gameStatus === "started") {
-		const setupScreen = document.getElementById("setup-screen");
 		if (!setupScreen) {
 			throw new Error(`Setup Screen not Found`);
 		}
 		setupScreen.style.display = "none";
+	}
+	if (gameStatus === "finished") {
+		setupScreen!.style.display = "none";
+	}
+	if (status === "finished") {
+		let event = new CustomEvent("gameFinished");
+
+		document.dispatchEvent(event);
 	}
 }
 
@@ -40,7 +48,6 @@ function createRadioButtons(id: string, numButtons: number, labels: string[]) {
 }
 
 function getFormElements(): FormElements {
-	// if (localStorage.getItem("game-status") === "started") return;
 	const form = document.getElementById("settings");
 	if (!form) {
 		throw new Error(`Form not found.`);
@@ -72,20 +79,20 @@ function handleSubmit(event: Event) {
 	const playerStats = {
 		player_1: {
 			score: 0,
-			attempts: 0,
+			attempts: 0
 		},
 		player_2: {
 			score: 0,
-			attempts: 0,
+			attempts: 0
 		},
 		player_3: {
 			score: 0,
-			attempts: 0,
+			attempts: 0
 		},
 		player_4: {
 			score: 0,
-			attempts: 0,
-		},
+			attempts: 0
+		}
 	};
 	localStorage.setItem("theme", theme);
 	localStorage.setItem("num-player", numPlayers);

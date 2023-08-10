@@ -5,8 +5,37 @@ html {
 	font-family: "Atkinson Hyperlegible", sans-serif;
 }
 
+.displayNone {
+	display: none !important;
+}
+
+h1 {
+	font-size: 48px;
+	text-align: center;
+	color: #152938;
+	display: flex;
+	flex-direction: column;
+}
+
+h2 {
+	text-align: center;
+}
+
+.main {
+	position: relative;
+	/* display: flex; */
+	justify-content: center;
+
+	align-content: center;
+}
+
 button {
 	cursor: pointer;
+}
+.btn-gameover {
+	height: 52px;
+	font-size: 20px;
+	font-weight: bold;
 }
 
 .orange {
@@ -15,6 +44,9 @@ button {
 
 .orange:hover {
 	background-color: #ffb84a;
+}
+.white-text {
+	color: #fcfcfc !important;
 }
 
 .white-text-med {
