@@ -93,18 +93,36 @@ input[type="radio"]:checked + .radio-label {
 @media only screen and (max-width: 900px) and (min-width: 400px) {
     .popup_setupl {
         width: 100%;
-        /* max-width: fit-content; */
+        max-width: 360px;
     }
 }
 
 @media only screen and (max-width: 399px) and (min-width: 200px) {
     .setup-screen {
         /* height: 100vh; */
+        max-width: 375px;
     }
     .mask-overlay_setup {
         /* height: 100vh; */
     }
     .game-settings {
-        max-width: 360px;
+        max-width: 327px;
+    }
+    .radio-label {
+        max-width: 134px;
+    }
+    .option-buttons_setup {
+        /* max-width: 279px; */
+        gap: clamp(10px, 10px, 20px);
+        grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+        /* display: flex; */
+        /* justify-content: space-between; */
+    }
+    .title_setup {
+        text-align: center;
+        margin: auto;
+    }
+    .game-settings {
+        padding: 30px 20px;
     }
 }
