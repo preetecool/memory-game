@@ -59,8 +59,6 @@ function setGridFromStorage() {
     // localStorage.setItem("cells", JSON.stringify(cells));
 }
 function setGrid() {
-    var gameDiv = document.getElementById("game-container");
-    gameDiv.style.display = 'flex';
     var gameStatus = localStorage.getItem("game-status");
     // if (gameStatus !== "started" || gameStatus !== "finished") return;
     if (localStorage.getItem("cells") || localStorage.getItem("match")) {
@@ -111,7 +109,7 @@ function setPlayerStats() {
     if (numPlayers !== "1") {
         var stats = JSON.parse(localStorage.getItem("player-stats") || "{}");
         for (var i = 1; i <= Number(numPlayers); i++) {
-            statsDiv.appendChild(createStatItem("Player ".concat(i), "player_".concat(i), stats["player_".concat(i)].score || "0"));
+            statsDiv.appendChild(createStatItem(screen.width < 420 ? "P".concat(i) : "Player ".concat(i), "player_".concat(i), stats["player_".concat(i)].score || "0"));
         }
         if (localStorage.getItem("player-turn")) {
             var playerTurn = Number(localStorage.getItem("player-turn"));
@@ -170,7 +168,7 @@ function mapIcons() {
         "star",
         "sun",
         "compass",
-        "newspaper",
+        "newspaper"
     ].map(function (id, idx) { return ({ id: idx, url: "./assets/icons/".concat(id, ".svg") }); });
     var grid16 = (_a = icons.slice(0, 8)).concat.apply(_a, icons.slice(0, 8));
     var grid36 = icons.concat.apply(icons, icons);

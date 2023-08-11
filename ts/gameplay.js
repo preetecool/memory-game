@@ -94,7 +94,7 @@ function mapFlippedCells(flippedCells) {
             id: Number(el.id.split("-")[1]),
             textContent: Number(el.textContent),
             // img: el.querySelector("img"),
-            src: (_a = el.querySelector("img")) === null || _a === void 0 ? void 0 : _a.src,
+            src: (_a = el.querySelector("img")) === null || _a === void 0 ? void 0 : _a.src
         };
         return cell;
     });
@@ -220,6 +220,8 @@ function handleReset() {
         playerStats[player].attempts = 0;
     }
     localStorage.setItem("player-stats", JSON.stringify(playerStats));
+    var mainDiv = document.getElementById("game-body");
+    mainDiv.style.display = "block";
     location.reload();
 }
 timerInterval = handleTimer();
@@ -245,14 +247,16 @@ function handleWinners() {
             player_1: playerStats.player_1.score,
             player_2: playerStats.player_2.score,
             player_3: playerStats.player_3.score,
-            player_4: playerStats.player_4.score,
+            player_4: playerStats.player_4.score
         };
         var sortedScores = Object.entries(scores).sort(function (a, b) { return b[1] - a[1]; });
         var topScore_1 = sortedScores[0][1];
-        winners = sortedScores.filter(function (_a) {
+        winners = sortedScores
+            .filter(function (_a) {
             var player = _a[0], score = _a[1];
             return score === topScore_1;
-        }).map(function (_a) {
+        })
+            .map(function (_a) {
             var player = _a[0];
             return player;
         });
@@ -306,9 +310,10 @@ function createPlayerResult(parent, label, score, winners) {
     var labeldiv = document.createElement("div");
     labeldiv.className = "stat-label";
     labeldiv.textContent = label;
+    var numPlayers = localStorage.getItem("num-player");
     var scoreElem = document.createElement("div");
     scoreElem.className = "blue-text-32";
-    scoreElem.textContent = String(score) + " Pairs";
+    scoreElem.textContent = numPlayers === "1" ? String(score) : String(score) + " Pairs";
     if (winners && winners.includes(id)) {
         div.className += " winner white-text";
         label += " (Winner!)";

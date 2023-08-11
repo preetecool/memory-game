@@ -1,131 +1,135 @@
 .setup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100%;
-    /* position: fixed; */
-    background-color: #152938;
-    font-weight: bold;
-    font-size: 20px;
-    z-index: 20;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	width: 100%;
+	/* position: fixed; */
+	background-color: #152938;
+	font-weight: bold;
+	font-size: 20px;
+	z-index: 20;
 }
 
 .title_setup {
-    color: #fcfcfc;
-    font-size: 40px;
-    font-weight: bold;
-    padding-bottom: 50px;
+	color: #fcfcfc;
+	font-size: 40px;
+	font-weight: bold;
+	padding-bottom: 50px;
 }
 .popup_setup {
-    width: 654px;
-    max-width: 654px;
-    z-index: 100;
-    align-self: center;
+	/* width: 654px; */
+	max-width: 654px;
+	z-index: 100;
+	align-self: center;
 }
 .game-settings {
-    max-width: 1440px;
-    min-width: 330px;
+	min-width: 654px;
+	max-width: 654px;
+	background-color: #fcfcfc;
+	padding: 56px;
+	border-radius: 20px;
+	display: flex;
+	flex-direction: column;
 
-    max-width: 542px;
-    background-color: #fcfcfc;
-    padding: 56px;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-
-    gap: 33px;
-    @media screen and (min-width: 1000px) {
-        padding: 60px;
-    }
+	gap: 33px;
+	@media screen and (min-width: 1000px) {
+		padding: 60px;
+	}
 }
 .setup-options {
-    max-width: 542px;
+	max-width: 542px;
 
-    width: 100%;
+	width: 100%;
 }
 .option-label_setup {
-    padding-bottom: 16px;
+	padding-bottom: 16px;
 }
 
 .option-buttons_setup {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    gap: clamp(20px, 20px, 30px);
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	gap: clamp(20px, 20px, 30px);
 }
 input[type="radio"] {
-    display: none;
+	display: none;
 }
 .radio-label {
-    padding: 10px 20px;
-    border-style: none;
-    border: 1px solid rgb(232, 231, 231);
+	padding: 10px 20px;
+	border-style: none;
+	border: 1px solid rgb(232, 231, 231);
 
-    cursor: pointer;
-    border-radius: 26px;
-    text-align: center;
-    background-color: #bcced9;
-    color: #fcfcfc;
+	cursor: pointer;
+	border-radius: 26px;
+	text-align: center;
+	background-color: #bcced9;
+	color: #fcfcfc;
 }
 
 input[type="radio"]:checked + .radio-label {
-    background-color: #304859;
-    color: #fcfcfc;
+	background-color: #304859;
+	color: #fcfcfc;
 }
 .radio-label:hover {
-    background-color: #6395b8;
-    color: #fcfcfc;
+	background-color: #6395b8;
+	color: #fcfcfc;
 }
 
 .start-game_button {
-    background-color: #fda214;
-    color: #fcfcfc;
-    width: 100%;
-    max-width: 542px;
-    border-radius: 35px;
-    border-style: none;
-    height: 70px;
-    font-weight: bold;
-    font-size: 32px;
+	background-color: #fda214;
+	color: #fcfcfc;
+	width: 100%;
+	max-width: 542px;
+	border-radius: 35px;
+	border-style: none;
+	height: 70px;
+	font-weight: bold;
+	font-size: 32px;
 }
 
 @media only screen and (max-width: 900px) and (min-width: 400px) {
-    .popup_setupl {
-        width: 100%;
-        max-width: 360px;
-    }
+	.popup_setupl {
+		width: 100%;
+		max-width: 360px;
+	}
 }
 
 @media only screen and (max-width: 399px) and (min-width: 200px) {
-    .mask-overlay_setup {
-        /* height: 100vh; */
-    }
-    .game-settings {
-        max-width: 327px;
-    }
-    .radio-label {
-        max-width: 134px;
-    }
-    .option-buttons_setup {
-        /* max-width: 279px; */
-        gap: clamp(10px, 10px, 20px);
-        grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-        /* display: flex; */
-        /* justify-content: space-between; */
-    }
-    .title_setup {
-        text-align: center;
-        margin: auto;
-    }
-    .game-settings {
-        padding: 30px;
-    }
-    .popup_setup {
-        width: 100%;
-        max-width: 360px;
-    }
-    .setup {
-        max-width: 375px;
-    }
+	.mask-overlay_setup {
+		/* height: 100vh; */
+	}
+	.game-settings {
+		max-width: 327px;
+	}
+	.radio-label {
+		max-width: 134px;
+	}
+	.option-buttons_setup {
+		/* max-width: 279px; */
+		gap: clamp(10px, 10px, 20px);
+		grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+		/* display: flex; */
+		/* justify-content: space-between; */
+	}
+	.title_setup {
+		text-align: center;
+		margin: auto;
+	}
+	.game-settings {
+		padding: 30px;
+		min-width: 327px;
+		max-width: 327px;
+	}
+	.popup_setup {
+		padding: 0px;
+		display: flex;
+		justify-content: center;
+	}
+	.setup {
+		/* max-width: 390px; */
+		width: 100vw;
+		display: block;
+		padding: 14px;
+	}
 }

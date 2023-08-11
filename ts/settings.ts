@@ -69,6 +69,7 @@ function getFormElements(): FormElements {
 
 function handleSubmit(event: Event) {
 	localStorage.clear();
+
 	const { theme, numPlayers, grid } = getFormElements();
 
 	if (!theme || !numPlayers || !grid) {

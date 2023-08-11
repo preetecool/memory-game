@@ -1,3 +1,6 @@
+* {
+	box-sizing: border-box;
+}
 body,
 html {
 	margin: 0;
@@ -100,4 +103,10 @@ button {
 
 .transition {
 	transition: 0.4s ease;
+}
+@media only screen and (max-width: 420px) and (min-width: 200px) {
+	.white-text-med,
+	.blue-text-med {
+		font-size: 13px;
+	}
 }
