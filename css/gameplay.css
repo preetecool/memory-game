@@ -1,194 +1,228 @@
 .game-body {
-	max-width: 1440px;
-	margin: 0 auto;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 50px;
 }
 
 .game-container {
-	width: 1100px;
-	margin: 0 auto;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* padding: 50px; */
 }
 
 .header {
-	width: 100%;
-	height: 52px;
-	padding-top: 100px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+    width: 100%;
+    height: 52px;
+    /* padding-top: 100px; */
+    padding: 100px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .game-button_wrapper {
-	display: flex;
-	gap: 16px;
+    display: flex;
+    gap: 16px;
 }
 
 .game-button {
-	margin-right: 0;
-	height: 52px;
-	border-radius: 26px;
-	padding: 14px 28px;
-	border-style: none;
+    margin-right: 0;
+    height: 52px;
+    border-radius: 26px;
+    padding: 14px 28px;
+    border-style: none;
 }
 
 .game-board {
-	margin-top: 85px;
-	gap: 16px;
+    margin-top: 85px;
+    gap: 16px;
 }
 .board-sm {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
 }
 .board-lg {
-	display: grid;
-	grid-template-columns: repeat(6, 1fr);
-	position: relative;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    position: relative;
 }
 
 .cell-lg {
-	width: 118px;
-	height: 118px;
-	border-radius: 50%;
-	text-align: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative;
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
 .cell-sm {
-	width: 82px;
-	height: 82px;
-	border-radius: 50%;
-	text-align: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative;
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
 .cell-cover {
-	width: 100%;
-	height: 100%;
-	border-radius: 50%;
-	background-color: #304859;
-	position: absolute;
-	top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #304859;
+    position: absolute;
+    top: 0;
 
-	left: 0;
-	z-index: 10;
+    left: 0;
+    z-index: 10;
 }
 
 .cell-lg:hover,
 .cell-sm:hover,
 .cell-cover:hover {
-	cursor: pointer;
-	color: #fcfcfc;
-	background-color: #6395b8;
+    cursor: pointer;
+    color: #fcfcfc;
+    background-color: #6395b8;
 }
 
 .player-stats {
-	width: 100%;
-	height: 52px;
-	margin-top: 100px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 30px;
+    width: fit-content;
+    height: 52px;
+    margin-top: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
 }
 
 .stat-item {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	/* max-width: 250px; */
-	width: 250px;
-	position: relative;
-	max-height: 72px;
-	font-weight: bold;
-	font-size: 18px;
-	color: #304859;
-	padding: 1em;
-	background-color: #dfe7ec;
-	border-radius: 10px;
-	box-sizing: border-box;
-	z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* max-width: 250px; */
+    width: 250px;
+    position: relative;
+    max-height: 72px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #304859;
+    padding: 1em;
+    background-color: #dfe7ec;
+    border-radius: 10px;
+    box-sizing: border-box;
+    z-index: 1;
 }
 .stat-label {
-	color: #7191a5;
-	font-size: 18px;
+    color: #7191a5;
+    font-size: 18px;
 }
 
 .stat-active {
-	background-color: #fda214;
-	color: #fcfcfc !important;
+    background-color: #fda214;
+    color: #fcfcfc !important;
 }
 .stat-active > .blue-text-32 {
-	color: #fcfcfc;
+    color: #fcfcfc;
+}
+.stat-active > .stat-label {
+    color: #fcfcfc !important;
 }
 
 .turn-indicator {
-	position: absolute;
-	width: 30px;
-	height: 30px;
-	transform: rotate(45deg) transLateX(-50%);
-	background-color: #fda214;
-	/* margin: -30px auto 0 auto; */
-	z-index: -1;
-	left: 50%;
-	top: -4px;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    transform: rotate(45deg) transLateX(-50%);
+    background-color: #fda214;
+    /* margin: -30px auto 0 auto; */
+    z-index: -1;
+    left: 50%;
+    top: -4px;
 }
 
 .icon svg path {
-	fill: #fcfcfc !important;
-	z-index: 0;
+    fill: #fcfcfc !important;
+    z-index: 0;
 }
 
 .icon-sm {
-	width: 40px;
-	height: 40px;
+    width: 40px;
+    height: 40px;
 }
 .icon-lg {
-	width: 60px;
-	height: 60px;
+    width: 60px;
+    height: 60px;
 }
 
 svg {
-	fill: white !important;
+    fill: white !important;
 }
 
 .player-result {
-	width: 542px;
-	height: 72px;
-	max-height: 72px;
-	background-color: #dfe7ec;
-	stroke: #979797;
-	border-radius: 10px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	/* padding: 25px 32px; */
-	padding: 1em 2em;
-	box-sizing: border-box;
+    width: 542px;
+    height: 72px;
+    max-height: 72px;
+    background-color: #dfe7ec;
+    stroke: #979797;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 25px 32px; */
+    padding: 1em 2em;
+    box-sizing: border-box;
 }
 .winner {
-	background-color: #152938;
+    background-color: #152938;
 }
 .winner > .stat-label {
-	color: #fcfcfc;
+    color: #fcfcfc;
 }
 .winner > .blue-text-32 {
-	color: #fcfcfc;
+    color: #fcfcfc;
 }
 
 .modal-bg {
-	background-color: rgba(0, 0, 0, 0.5);
-	position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
 }
 
 .modal {
-	position: absolute;
+    position: absolute;
+}
+
+@media only screen and (max-width: 800px) and (min-width: 421px) {
+    .game-body {
+        width: 670px;
+    }
+}
+
+@media only screen and (max-width: 420px) and (min-width: 200px) {
+    .game-body {
+        width: 670px;
+    }
+    .header {
+        padding: 0;
+    }
+    .stat-item {
+        max-width: 151px;
+        height: 70px;
+    }
+    .blue-text-32 {
+        font-size: 24px;
+    }
+    .player-stats {
+        max-width: 100%;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
 }

@@ -115,8 +115,6 @@ function setPlayerStats() {
             var playerTurn = Number(localStorage.getItem("player-turn"));
             var turnIndicator = document.createElement("div");
             var childElement = statsDiv.querySelector("#player_".concat(playerTurn, "-card"));
-            var firstChild = childElement.children[0];
-            firstChild.className = "stat-label white-text";
             childElement === null || childElement === void 0 ? void 0 : childElement.classList.add("stat-active");
             turnIndicator.className = "turn-indicator";
             if (childElement) {
@@ -170,7 +168,7 @@ function mapIcons() {
         "star",
         "sun",
         "compass",
-        "newspaper"
+        "newspaper",
     ].map(function (id, idx) { return ({ id: idx, url: "./assets/icons/".concat(id, ".svg") }); });
     var grid16 = (_a = icons.slice(0, 8)).concat.apply(_a, icons.slice(0, 8));
     var grid36 = icons.concat.apply(icons, icons);

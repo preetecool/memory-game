@@ -52,7 +52,7 @@ function restoreMatchedCells() {
     }
 }
 function handleMatch(flippedCells) {
-    // handleGameOver();
+    handleGameOver();
     var playerTurn = Number(localStorage.getItem("player-turn"));
     var cells = mapFlippedCells(flippedCells);
     var matchingCells = false;
@@ -94,7 +94,7 @@ function mapFlippedCells(flippedCells) {
             id: Number(el.id.split("-")[1]),
             textContent: Number(el.textContent),
             // img: el.querySelector("img"),
-            src: (_a = el.querySelector("img")) === null || _a === void 0 ? void 0 : _a.src
+            src: (_a = el.querySelector("img")) === null || _a === void 0 ? void 0 : _a.src,
         };
         return cell;
     });
@@ -111,13 +111,9 @@ function updatePlayerStat(player, field, value) {
             score.textContent = playerStats[player].score;
         }
     }
-    if (field === "attempts") {
-        if (numPlayers === 1) {
-            var moves = document.getElementById("moves");
-            moves.textContent = playerStats.player_1.attempts.toString();
-        }
-        else {
-        }
+    if (field === "attempts" && numPlayers === "1") {
+        var moves = document.getElementById("moves");
+        moves.textContent = playerStats.player_1.attempts.toString();
     }
 }
 function handleMatchingCells(flippedCells, cells) {
@@ -187,7 +183,6 @@ function handleTimer() {
         return;
     var timerValue = localStorage.getItem("timer");
     var _a = timerValue ? JSON.parse(timerValue) : [0, 0, 0], minutes = _a[0], decaseconds = _a[1], seconds = _a[2];
-    // Function to update the display
     var updateDisplay = function () {
         var timerElement = document.getElementById("stopwatch");
         if (timerElement) {
@@ -250,16 +245,14 @@ function handleWinners() {
             player_1: playerStats.player_1.score,
             player_2: playerStats.player_2.score,
             player_3: playerStats.player_3.score,
-            player_4: playerStats.player_4.score
+            player_4: playerStats.player_4.score,
         };
         var sortedScores = Object.entries(scores).sort(function (a, b) { return b[1] - a[1]; });
         var topScore_1 = sortedScores[0][1];
-        winners = sortedScores
-            .filter(function (_a) {
+        winners = sortedScores.filter(function (_a) {
             var player = _a[0], score = _a[1];
             return score === topScore_1;
-        })
-            .map(function (_a) {
+        }).map(function (_a) {
             var player = _a[0];
             return player;
         });
@@ -294,10 +287,13 @@ function createModal(parent, numPlayers, winners) {
     parent.appendChild(modal);
     var title = document.createElement("h1");
     var subtitle = document.createElement("span");
-    subtitle.className = "stat-label";
-    subtitle.textContent = "Congrats! Game complete. Results:";
-    var winner = winners.length > 1 ? "It's a tie!" : winners[0];
+    // let singleWinner = `Player ${winners[0].charAt(winners[0].length)}`;
+    // let singleWinner = "";
+    var winner = winners.length > 1 && numPlayers > 1 ? "It's a tie!" : "".concat("singleWinner", " Wins!");
     title.textContent = numPlayers === 1 ? "You Did it!" : winner;
+    subtitle.className = "stat-label";
+    subtitle.style.color = "#7191a5";
+    subtitle.textContent = "Game over! Here are the results:";
     modal.appendChild(title);
     title.appendChild(subtitle);
     return modal;
