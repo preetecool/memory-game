@@ -52,7 +52,7 @@ function restoreMatchedCells() {
     }
 }
 function handleMatch(flippedCells) {
-    handleGameOver();
+    // handleGameOver();
     var playerTurn = Number(localStorage.getItem("player-turn"));
     var cells = mapFlippedCells(flippedCells);
     var matchingCells = false;

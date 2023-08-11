@@ -67,6 +67,8 @@ function setGridFromStorage() {
 }
 
 function setGrid(): undefined {
+    let gameDiv = document.getElementById("game-container");
+    gameDiv!.style.display= 'flex';
     let gameStatus = localStorage.getItem("game-status");
     // if (gameStatus !== "started" || gameStatus !== "finished") return;
     if (localStorage.getItem("cells") || localStorage.getItem("match")) {

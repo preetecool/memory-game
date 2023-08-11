@@ -98,10 +98,6 @@ input[type="radio"]:checked + .radio-label {
 }
 
 @media only screen and (max-width: 399px) and (min-width: 200px) {
-    .setup-screen {
-        /* height: 100vh; */
-        max-width: 375px;
-    }
     .mask-overlay_setup {
         /* height: 100vh; */
     }
@@ -123,6 +119,13 @@ input[type="radio"]:checked + .radio-label {
         margin: auto;
     }
     .game-settings {
-        padding: 30px 20px;
+        padding: 30px;
+    }
+    .popup_setup {
+        width: 100%;
+        max-width: 360px;
+    }
+    .setup {
+        max-width: 375px;
     }
 }
