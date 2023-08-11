@@ -261,6 +261,7 @@ svg {
 	}
 	.player-result {
 		width: auto;
+		padding: 20px;
 	}
 	.modal {
 		padding: 20px;
