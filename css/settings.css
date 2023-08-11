@@ -22,7 +22,7 @@
 	/* width: 654px; */
 	max-width: 654px;
 	z-index: 100;
-	align-self: center;
+	/* align-self: center; */
 }
 .game-settings {
 	min-width: 654px;
@@ -96,9 +96,6 @@ input[type="radio"]:checked + .radio-label {
 }
 
 @media only screen and (max-width: 399px) and (min-width: 200px) {
-	.mask-overlay_setup {
-		/* height: 100vh; */
-	}
 	.game-settings {
 		max-width: 327px;
 	}
@@ -131,5 +128,8 @@ input[type="radio"]:checked + .radio-label {
 		width: 100vw;
 		display: block;
 		padding: 14px;
+	}
+	.setup-options > .option-buttons_setup {
+		display: grid;
 	}
 }
