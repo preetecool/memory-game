@@ -123,7 +123,7 @@ function mapFlippedCells(flippedCells: HTMLElement[]): cell[] {
 function updatePlayerStat(player: string, field: keyof player, value: number) {
 	let playerStats = JSON.parse(localStorage.getItem("player-stats")!);
 	let numPlayers = JSON.parse(localStorage.getItem("num-player")!);
-	let playerTurn = JSON.parse(localStorage.getItem("player-turn")!);
+	// let playerTurn = Number(JSON.parse(localStorage.getItem("player-turn")!));
 	playerStats[player][field] += value;
 	localStorage.setItem("player-stats", JSON.stringify(playerStats));
 	if (field === "score" && numPlayers !== "1") {
@@ -134,7 +134,9 @@ function updatePlayerStat(player: string, field: keyof player, value: number) {
 	}
 	if (field === "attempts") {
 		let moves = document.getElementById("moves")!;
-		moves.textContent = playerStats.player_1.attempts.toString();
+		if (moves) {
+			moves.textContent = playerStats[player].attempts;
+		}
 	}
 }
 
@@ -166,6 +168,7 @@ function handleScore() {
 }
 
 function handleAttemptCount() {
+	// updatePlayerStat(`player_${localStorage.getItem("player-turn")}`, "attempts", 1);
 	if (localStorage.getItem("num-player") === "1") {
 		updatePlayerStat("player_1", "attempts", 1);
 		return;
