@@ -111,7 +111,7 @@ function updatePlayerStat(player, field, value) {
             score.textContent = playerStats[player].score;
         }
     }
-    if (field === "attempts" && numPlayers === "1") {
+    if (field === "attempts") {
         var moves = document.getElementById("moves");
         moves.textContent = playerStats.player_1.attempts.toString();
     }
@@ -138,13 +138,7 @@ function handleScore() {
     updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "score", 1);
 }
 function handleAttemptCount() {
-    if (localStorage.getItem("num-player") === "1") {
-        updatePlayerStat("player_1", "attempts", 1);
-        return;
-    }
-    else {
-        updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "attempts", 1);
-    }
+    updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "attempts", 1);
 }
 function handlePlayerTurn(playerTurn) {
     var numPlayers = localStorage.getItem("num-player");
