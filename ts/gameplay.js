@@ -52,7 +52,6 @@ function restoreMatchedCells() {
     }
 }
 function handleMatch(flippedCells) {
-    // handleGameOver();
     var playerTurn = Number(localStorage.getItem("player-turn"));
     var cells = mapFlippedCells(flippedCells);
     var matchingCells = false;
@@ -294,9 +293,8 @@ function createModal(parent, numPlayers, winners) {
     parent.appendChild(modal);
     var title = document.createElement("h1");
     var subtitle = document.createElement("span");
-    // let singleWinner = `Player ${winners[0].charAt(winners[0].length)}`;
-    // let singleWinner = "";
-    var winner = winners.length > 1 && numPlayers > 1 ? "It's a tie!" : "".concat("singleWinner", " Wins!");
+    var singleWinner = "Player ".concat(winners[0].charAt(winners[0].length - 1));
+    var winner = winners.length > 1 && numPlayers > 1 ? "It's a tie!" : "".concat(singleWinner, " Wins!");
     title.textContent = numPlayers === 1 ? "You Did it!" : winner;
     subtitle.className = "stat-label";
     subtitle.style.color = "#7191a5";

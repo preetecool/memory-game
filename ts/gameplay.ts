@@ -70,7 +70,6 @@ function restoreMatchedCells() {
 }
 
 function handleMatch(flippedCells: HTMLElement[]) {
-	// handleGameOver();
 	let playerTurn = Number(localStorage.getItem("player-turn"));
 	const cells = mapFlippedCells(flippedCells);
 	let matchingCells: boolean = false;
@@ -337,10 +336,10 @@ function createModal(parent: HTMLElement, numPlayers: number, winners: string[])
 	parent.appendChild(modal);
 	let title = document.createElement("h1");
 	let subtitle = document.createElement("span");
-	// let singleWinner = `Player ${winners[0].charAt(winners[0].length)}`;
-	// let singleWinner = "";
+	let singleWinner = `Player ${winners[0].charAt(winners[0].length - 1)}`;
+
 	let winner =
-		winners.length > 1 && numPlayers > 1 ? "It's a tie!" : `${"singleWinner"} Wins!`;
+		winners.length > 1 && numPlayers > 1 ? "It's a tie!" : `${singleWinner} Wins!`;
 	title.textContent = numPlayers === 1 ? "You Did it!" : winner;
 	subtitle.className = "stat-label";
 	subtitle.style.color = "#7191a5";
