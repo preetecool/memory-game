@@ -138,7 +138,13 @@ function handleScore() {
     updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "score", 1);
 }
 function handleAttemptCount() {
-    updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "attempts", 1);
+    if (localStorage.getItem("num-player") === "1") {
+        updatePlayerStat("player_1", "attempts", 1);
+        return;
+    }
+    else {
+        updatePlayerStat("player_".concat(localStorage.getItem("player-turn")), "attempts", 1);
+    }
 }
 function handlePlayerTurn(playerTurn) {
     var numPlayers = localStorage.getItem("num-player");

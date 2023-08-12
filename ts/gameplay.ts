@@ -166,7 +166,12 @@ function handleScore() {
 }
 
 function handleAttemptCount() {
-	updatePlayerStat(`player_${localStorage.getItem("player-turn")}`, "attempts", 1);
+	if (localStorage.getItem("num-player") === "1") {
+		updatePlayerStat("player_1", "attempts", 1);
+		return;
+	} else {
+		updatePlayerStat(`player_${localStorage.getItem("player-turn")}`, "attempts", 1);
+	}
 }
 
 function handlePlayerTurn(playerTurn: number) {
