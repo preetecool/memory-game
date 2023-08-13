@@ -245,17 +245,21 @@ function handleWinners() {
     var modal = undefined;
     var winners = [];
     if (numPlayers !== 1) {
-        var scores = {
-            player_1: playerStats.player_1.score,
-            player_2: playerStats.player_2.score,
-            player_3: playerStats.player_3.score,
-            player_4: playerStats.player_4.score
-        };
+        // Construct scores object dynamically
+        var scores = {};
+        for (var i = 1; i <= numPlayers; i++) {
+            if (playerStats["player_".concat(i)]) {
+                scores["player_".concat(i)] = playerStats["player_".concat(i)].score;
+            }
+            else {
+                console.warn("player_".concat(i, " not found in playerStats"));
+            }
+        }
         var sortedScores = Object.entries(scores).sort(function (a, b) { return b[1] - a[1]; });
         var topScore_1 = sortedScores[0][1];
         winners = sortedScores
             .filter(function (_a) {
-            var player = _a[0], score = _a[1];
+            var score = _a[1];
             return score === topScore_1;
         })
             .map(function (_a) {
@@ -263,23 +267,23 @@ function handleWinners() {
             return player;
         });
         modal = createModal(modalBg, numPlayers, winners);
-        for (var i = 0; i <= numPlayers; i++) {
+        for (var i = 0; i < numPlayers; i++) {
             createPlayerResult(modal, "Player ".concat(i + 1), playerStats["player_".concat(i + 1)].score, winners);
         }
     }
-    else {
+    if (numPlayers === 1) {
         winners.push(playerStats["player_1"]);
         modal = createModal(modalBg, numPlayers, winners);
         createPlayerResult(modal, "Time Elapsed", document.getElementById("stopwatch").textContent);
         createPlayerResult(modal, "Moves Taken", playerStats["player_1"].attempts);
     }
+    console.log("this");
     var buttonDiv = document.createElement("div");
     buttonDiv.className = "option-buttons_setup";
     buttonDiv.style.height = "52px !important";
     createButton("Restart", buttonDiv, "orange", handleReset);
     createButton("Setup New Game", buttonDiv, "#DFE7EC", newGame, "#304859");
     modal.appendChild(buttonDiv);
-    var span = document.createElement("span");
 }
 function createModalBackground(parent) {
     var modalBg = document.createElement("div");
@@ -293,7 +297,7 @@ function createModal(parent, numPlayers, winners) {
     parent.appendChild(modal);
     var title = document.createElement("h1");
     var subtitle = document.createElement("span");
-    var singleWinner = "Player ".concat(winners[0].charAt(winners[0].length - 1));
+    var singleWinner = numPlayers > 1 ? "Player ".concat(winners[0].charAt(winners[0].length - 1)) : null;
     var winner = winners.length > 1 && numPlayers > 1 ? "It's a tie!" : "".concat(singleWinner, " Wins!");
     title.textContent = numPlayers === 1 ? "You Did it!" : winner;
     subtitle.className = "stat-label";
@@ -319,7 +323,6 @@ function createPlayerResult(parent, label, score, winners) {
         div.className += " winner white-text";
         label += " (Winner!)";
     }
-    console.log(winners);
     div.appendChild(labeldiv);
     div.appendChild(scoreElem);
     parent.appendChild(div);

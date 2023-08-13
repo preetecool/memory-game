@@ -9,6 +9,10 @@ type player = {
 	score: number;
 	attempts: number;
 };
+
+interface PlayerScores {
+	[key: string]: number;
+}
 let timerInterval: number | undefined;
 
 let numCellsRevealed: number = 0;
@@ -280,22 +284,28 @@ function handleWinners() {
 	let modalBg = createModalBackground(parentDiv);
 	let modal = undefined;
 	let winners: string[] = [];
+
 	if (numPlayers !== 1) {
-		let scores = {
-			player_1: playerStats.player_1.score,
-			player_2: playerStats.player_2.score,
-			player_3: playerStats.player_3.score,
-			player_4: playerStats.player_4.score
-		};
+		// Construct scores object dynamically
+		let scores: PlayerScores = {};
+
+		for (let i = 1; i <= numPlayers; i++) {
+			if (playerStats[`player_${i}`]) {
+				scores[`player_${i}`] = playerStats[`player_${i}`].score;
+			} else {
+				console.warn(`player_${i} not found in playerStats`);
+			}
+		}
+
 		let sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
 		let topScore = sortedScores[0][1];
 
 		winners = sortedScores
-			.filter(([player, score]) => score === topScore)
+			.filter(([, score]) => score === topScore)
 			.map(([player]) => player);
 
 		modal = createModal(modalBg, numPlayers, winners);
-		for (let i = 0; i <= numPlayers; i++) {
+		for (let i = 0; i < numPlayers; i++) {
 			createPlayerResult(
 				modal,
 				`Player ${i + 1}`,
@@ -303,7 +313,8 @@ function handleWinners() {
 				winners
 			);
 		}
-	} else {
+	}
+	if (numPlayers === 1) {
 		winners.push(playerStats["player_1"]);
 		modal = createModal(modalBg, numPlayers, winners);
 		createPlayerResult(
@@ -313,15 +324,15 @@ function handleWinners() {
 		);
 		createPlayerResult(modal, "Moves Taken", playerStats[`player_1`].attempts);
 	}
+	console.log("this");
 	let buttonDiv = document.createElement("div");
 	buttonDiv.className = "option-buttons_setup";
 	buttonDiv.style.height = "52px !important";
 
 	createButton("Restart", buttonDiv, "orange", handleReset);
 	createButton("Setup New Game", buttonDiv, "#DFE7EC", newGame, "#304859");
-	modal.appendChild(buttonDiv);
 
-	let span = document.createElement("span");
+	modal!.appendChild(buttonDiv);
 }
 function createModalBackground(parent: HTMLElement) {
 	let modalBg = document.createElement("div");
@@ -336,7 +347,8 @@ function createModal(parent: HTMLElement, numPlayers: number, winners: string[])
 	parent.appendChild(modal);
 	let title = document.createElement("h1");
 	let subtitle = document.createElement("span");
-	let singleWinner = `Player ${winners[0].charAt(winners[0].length - 1)}`;
+	let singleWinner =
+		numPlayers > 1 ? `Player ${winners[0].charAt(winners[0].length - 1)}` : null;
 
 	let winner =
 		winners.length > 1 && numPlayers > 1 ? "It's a tie!" : `${singleWinner} Wins!`;
@@ -374,8 +386,6 @@ function createPlayerResult(
 		div.className += " winner white-text";
 		label += " (Winner!)";
 	}
-
-	console.log(winners);
 
 	div.appendChild(labeldiv);
 	div.appendChild(scoreElem);
